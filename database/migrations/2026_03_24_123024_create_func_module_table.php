@@ -10,12 +10,17 @@ return new class extends Migration
     {
         Schema::create('function_module', function (Blueprint $table) {
             $table->id(); 
+
+            $table->foreignId('module_id')
+                  ->constrained('modules')
+                  ->onDelete('cascade');
+                  
             $table->integer('function_id')->unique();
             $table->string('function_name');
             $table->text('description')->nullable();
-            $table->integer('module_id');
-            $table->string('module_name');
-            $table->timestamps();
+            
+            
+            
         });
     }
 

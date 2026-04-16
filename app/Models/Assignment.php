@@ -3,10 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class Assignment extends Model
 {
-    protected $table = 'assignments';
+    use HasFactory;
+
+    protected $table = 'assignment';
+
+    public $timestamps = false;
     protected $fillable = ['role_id', 'function_module_id', 'permission'];
 
     
