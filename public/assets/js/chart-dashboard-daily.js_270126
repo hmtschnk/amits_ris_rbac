@@ -1,0 +1,97 @@
+var barchart = document.getElementById("chart-line-daily").getContext("2d");
+
+var arr_day = [];
+var arr_upload_case = [];
+var arr_view_image = [];
+
+get_summary_daily.forEach(function(item){
+    arr_day.push(item.dd);
+    arr_upload_case.push(item.upload_case);
+    arr_view_image.push(item.view_image);
+});
+
+new Chart(barchart, {
+    type: "line",
+    data: {
+        labels: arr_day,
+        datasets: [
+        {
+            label: "Case Upload",
+            borderColor: "#3e1379",
+            backgroundColor: "#3e1379",
+            fill: false,
+            data: arr_upload_case,
+        },
+        {
+            label: "Image View",
+            borderColor: "#2dce89",
+            backgroundColor: "#2dce89",
+            fill: false,
+            data: arr_view_image,
+        }
+    ],
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'bottom',
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        var label = context.dataset.label || '';
+                        if (context.parsed.y !== null) {
+                            label += ' ' +context.parsed.y + '';
+                        }
+                        return label;
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                title: {
+                    display: true,
+                    text: "Total",
+                    font: {
+                        size: 11,
+                        family: "Open Sans",
+                        style: 'bold',
+                    },
+                },
+                ticks: {
+                    font: {
+                        size: 11,
+                        family: "Open Sans",
+                        style: 'normal',
+                    },
+                    precision: 0
+                },
+                stacked: false,
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: "Daily",
+                    font: {
+                        size: 11,
+                        family: "Open Sans",
+                        style: 'bold',
+                    }
+                },
+                ticks: {
+                    font: {
+                        size: 11,
+                        family: "Open Sans",
+                        style: 'normal',
+                    },
+                },
+                stacked: true,
+            },
+        },
+
+    },
+});

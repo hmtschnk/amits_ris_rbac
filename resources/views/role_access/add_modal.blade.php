@@ -13,7 +13,7 @@
                         {{-- 1. Role Selection --}}
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label class="form-control-label">Roles <span class="text-danger">*</span></label>
+                                <label class="form-control-label">Roles<span class="text-danger">*</span></label>
                                 <select name="role_id" class="form-select" required>
                                     <option value="">Choose Role</option>
                                     @foreach($roles as $role)
@@ -24,7 +24,7 @@
                         </div>
                         {{-- 2. Module Selection --}}
                         <div class="mb-3">
-                            <label for="module_id" class="form-label">Module</label>
+                            <label for="module_id" class="form-label">Module<span class="text-danger">*</span></label>
                             <select class="form-select" id="module_id" name="module_id" required>
                                 <option value="" selected disabled>Choose Module</option>
                                 @foreach($modules as $module)
@@ -34,7 +34,7 @@
                         </div>
                         {{-- 3. Function Access Selection --}}
                         <div class="mb-3">
-                            <label for="function_module_id" class="form-label">Function Access</label>
+                            <label for="function_module_id" class="form-label">Function Access<span class="text-danger">*</span></label>
                             <select class="form-select" id="function_module_id" name="function_module_id" required disabled>
                                 <option value="" selected disabled>Select a Module first</option>
                             </select>
@@ -42,7 +42,7 @@
                         {{-- 4. Permission Level --}}
                         <div class="col-md-12 mt-3">
                             <div class="form-group">
-                                <label class="form-control-label">Permission Level <span class="text-danger"></span></label>
+                                <label class="form-control-label">Permission Level<span class="text-danger">*</span></label>
                                 <select name="permission" class="form-select" required>
                                     <option value="VIEW">VIEW</option>
                                     <option value="EDIT">EDIT</option>

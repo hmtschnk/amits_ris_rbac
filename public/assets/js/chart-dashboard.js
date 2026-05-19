@@ -1,0 +1,151 @@
+var ctx1 = document.getElementById("chart-line").getContext("2d");
+
+var arr_month = [];
+var arr_isLate = [];
+var arr_isNotLate = [];
+var arr_final = [];
+var arr_isLate_percent = [];
+var arr_isNotLate_percent = [];
+
+/*get_summary_month.forEach(function(item){
+    arr_month.push(item.mon);
+    arr_isLate.push(item.islate);
+
+    if (item.islate > 0){
+        arr_isNotLate.push(item.final_report - item.islate);
+        arr_isNotLate_percent.push((((item.final_report - item.islate)/item.final_report)*100).toFixed(2));
+    }else{
+        arr_isNotLate.push(item.final_report);
+        arr_isNotLate_percent.push(((item.final_report/item.final_report)*100).toFixed(2));
+    }
+    arr_final.push(item.final_report);
+    arr_isLate_percent.push(((item.islate/item.final_report)*100).toFixed(2));
+});*/
+
+let data = get_summary_month;
+if (data.length > 12) {
+    data = data.slice(1);
+}
+
+data.forEach(function(item){
+    arr_month.push(item.mon);
+    arr_isLate.push(item.islate);
+
+    if (item.islate > 0){
+        arr_isNotLate.push(item.final_report - item.islate);
+        arr_isNotLate_percent.push((((item.final_report - item.islate) / item.final_report) * 100).toFixed(2));
+    } else {
+        arr_isNotLate.push(item.final_report);
+        arr_isNotLate_percent.push("100.00");        
+    }
+
+    arr_final.push(item.final_report);
+    arr_isLate_percent.push(((item.islate / item.final_report) * 100).toFixed(2));
+});
+
+new Chart(ctx1, {
+    type: "line",
+    data: {
+        labels: arr_month,
+        datasets: [
+        {
+            //label: "Total Completed",
+            label: window.chartLabels.total_completed,
+            borderColor: "#3e1379 ",
+            backgroundColor: "#3e1379",
+            fill: false,
+            data: arr_final,
+
+        },
+        {
+            //label: "Completed late",
+            label: window.chartLabels.completed_late,
+            borderColor: "#f5365c",
+            backgroundColor: "#f5365c",
+            fill: false,
+            data: arr_isLate,
+        },
+        {
+            //label: "Completed on time",
+            label: window.chartLabels.completed_ontime,
+            borderColor: "#2dce89",
+            backgroundColor: "#2dce89",
+            fill: false,
+            data: arr_isNotLate,
+        }
+    ],
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'bottom',
+            },
+        },
+        scales: {
+            y: {
+                title: {
+                    display: true,
+                    //text: "Number of Cases",
+                    text: window.chartLabels.number_of_cases_y,
+                    font: {
+                        size: 11,
+                        family: "Open Sans",
+                        style: 'bold',
+                    },
+                },
+                weight:1,
+                grid: {
+                    drawBorder: true,
+                    display: true,
+                    drawOnChartArea: true,
+                    drawTicks: false,
+                    // borderDash: [5, 5]
+                },
+                ticks: {
+                    padding: 10,
+                    font: {
+                        size: 11,
+                        family: "Open Sans",
+                        style: 'normal',
+                        lineHeight: 2
+                    },
+                    precision: 0
+                },
+            },
+            x: {
+                title: {
+                    display: true,
+                    //text: "Month",
+                    text: window.chartLabels.month_x,
+                    font: {
+                        size: 11,
+                        family: "Open Sans",
+                        style: 'bold',
+                    },
+                },
+                grid: {
+                    drawBorder: false,
+                    display: false,
+                    drawOnChartArea: false,
+                    drawTicks: false,
+                    // borderDash: [5, 5]
+                },
+                ticks: {
+                    display: true,
+                    padding: 20,
+                    font: {
+                        size: 11,
+                        family: "Open Sans",
+                        style: 'normal',
+                    },
+                }
+            },
+        },
+
+    },
+});
+
+

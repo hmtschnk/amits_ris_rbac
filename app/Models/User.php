@@ -22,6 +22,19 @@ class User extends Authenticatable
 
     public function roles()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Roles::class , 'role_id');
+    }
+
+    public function hasRoles(array|string $roles)
+    {
+        if (!$this->roles) {
+            return false;
+        }
+
+        $roles = is_array($roles) ? $roles : [$roles];
+        return $this->roles()->whereIn('code', $roles)->exists();
     }
 }
+
+
+

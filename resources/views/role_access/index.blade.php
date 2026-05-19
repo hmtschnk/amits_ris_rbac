@@ -1,8 +1,8 @@
 
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
- @section('content') 
-<div class="row mt-2 mx-4">
-
+ @section('content')
+    @include('layouts.navbars.auth.topnav')
+<div class="row mt-4 mx-4">
     <div class="col-12">
         <div class="card mb-4">
             <div class="card-header pb-0">
@@ -18,8 +18,7 @@
                                 <div class="form-group">
                                     <label class="form-control-label text-xs mb-1">Role</label>
                                     <select name="role_id" class="form-select form-select-sm">
-                                        <option value="" disabled @if(empty($search['role_id'])) selected @endif>Select Role</option>
-                                        <option value="">All Roles</option>
+                                        <option value=""disabled @if(empty($search['role_id'])) selected @endif>Select Role</option>
                                         @foreach($roles as $role)
                                             <option value="{{ $role->id }}" @if(@$search['role_id'] == $role->id) selected @endif>
                                                 {{ $role->name }}
@@ -36,7 +35,6 @@
                                     <label class="form-control-label text-xs mb-1">Module</label>
                                     <select name="module_id" class="form-select form-select-sm">
                                         <option value="" disabled @if(empty($search['module_id'])) selected @endif>Select Module</option>
-                                        <option value="">All Modules</option>
                                         @foreach($modules as $module)
                                             <option value="{{ $module->id }}" @if(@$search['module_id'] == $module->id) selected @endif>
                                                 {{ $module->name }}
@@ -53,7 +51,6 @@
                                     <label class="form-control-label text-xs mb-1">Function Access</label>
                                     <select name="function_id" class="form-select form-select-sm">
                                         <option value="" disabled @if(empty($search['function_id'])) selected @endif>Select Function</option>
-                                        <option value="">All Functions</option>
                                         @foreach($functions as $func)
                                             <option value="{{ $func->id }}" @if(@$search['function_id'] == $func->id) selected @endif>
                                                 {{ $func->function_name }}
