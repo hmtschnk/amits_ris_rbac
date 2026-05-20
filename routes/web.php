@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PatientReferralController;
+use App\Http\Controllers\ModuleConfigController;
 
+// Role Access Routes
 Route::get('/role-access', [RolePermissionController::class, 'index'])
     ->name('role-access.index')
     ->middleware('auth'); 
@@ -21,6 +23,15 @@ Route::get('/login', [AuthController::class, 'show'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::get('/logout', [AuthController::class, 'show']);
 Route::post('/logout', [AuthController::class, 'destroy'])->name('auth.destroy');
+
+// Module Config AJAX Routes (no page, JSON only)
+Route::group(['middleware' => ['auth']], function () {
+    Route::post('/module-config/store-module', [ModuleConfigController::class, 'storeModule'])
+        ->name('module-config.store-module');
+ 
+    Route::post('/module-config/store-function', [ModuleConfigController::class, 'storeFunction'])
+        ->name('module-config.store-function');
+});
 
 
 // Patient Referral Feature Route Management
