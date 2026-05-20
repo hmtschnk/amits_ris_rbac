@@ -183,7 +183,7 @@
 </div>
 
 @include('role_access.add_modal')
-<script src="{{ asset('js/role-permission-button.js') }}"></script>
+<script src="{{ asset('assets/js/role-permission-button.js') }}"></script>
 @endsection
                                     
                                     

@@ -23,10 +23,6 @@ Route::get('/logout', [AuthController::class, 'show']);
 Route::post('/logout', [AuthController::class, 'destroy'])->name('auth.destroy');
 
 
-// Route::get('/patient-referral', [PatientReferralController::class, 'listing'])
-//     ->name('patient_referral.listing')
-//     ->middleware('auth'); 
-
 // Patient Referral Feature Route Management
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/patient-referral', [PatientReferralController::class, 'listing'])->name('patient_referral.listing');

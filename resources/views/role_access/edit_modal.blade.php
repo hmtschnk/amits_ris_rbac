@@ -24,7 +24,7 @@
                         {{-- 2. Module Selection --}}
                         <div class="col-md-12 mb-3">
                             <label class="form-control-label">Module <span class="text-danger">*</span></label>
-                            <select class="form-select edit-module-select" data-assignment-id="{{ $assignment->id }}" required>
+                            <select name="module_id" class="form-select edit-module-select" data-assignment-id="{{ $assignment->id }}" required>
                                 @foreach($modules as $module)
                                     <option value="{{ $module->id }}" {{ $assignment->functionModule->module_id == $module->id ? 'selected' : '' }}>
                                         {{ $module->name }}
@@ -35,7 +35,7 @@
                         {{-- 3. Function Access Selection --}}
                         <div class="col-md-12 mb-3">
                             <label class="form-control-label">Function Access <span class="text-danger">*</span></label>
-                            <select name="function_module_id" class="form-select edit-function-select" id="edit_function_{{ $assignment->id }}" required>
+                            <select name="function_module_id" class="form-select edit-function-select" id="edit_function_{{ $assignment->id }}" data-current-function="{{ $assignment->function_module_id }}" required>
                                 @foreach($functions->where('module_id', $assignment->functionModule->module_id) as $func)
                                     <option value="{{ $func->id }}" {{ $assignment->function_module_id == $func->id ? 'selected' : '' }}>
                                         {{ $func->function_name }}
