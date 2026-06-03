@@ -1,10 +1,14 @@
 (function () {
 
     // ── Read URLs from data attributes (set in blade, no {{ }} in JS) ──
-    const modal           = document.getElementById('addRoleAccessModal');
-    const storeModuleUrl  = modal.dataset.storeModuleUrl;
-    const storeFunctionUrl= modal.dataset.storeFunctionUrl;
-    const CSRF            = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    // 
+    
+    var modal = document.getElementById('addRoleAccessModal');
+    if (!modal) return; // safety guard
+
+    var storeModuleUrl   = modal.getAttribute('data-store-module-url');
+    var storeFunctionUrl = modal.getAttribute('data-store-function-url');
+    var CSRF             = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     // ── Helper: show success / error message ──────────────────────────
     function showMsg(el, text, isError) {
@@ -59,7 +63,7 @@
         .then(function (data) {
             if (data.success) {
                 // Add new module to BOTH dropdowns
-                var addModuleSel     = document.getElementById('add_module_id');
+                var addModuleSel     = document.getElementById('module_id');
                 var newFuncModuleSel = document.getElementById('newFunctionModuleId');
 
                 addOption(addModuleSel,     data.module.id, data.module.name, true);
@@ -99,7 +103,7 @@
         document.getElementById('functionMsg').textContent = '';
 
         // Pre-select whatever module is already chosen in main dropdown
-        var chosenModuleId = document.getElementById('add_module_id').value;
+        var chosenModuleId = document.getElementById('module_id').value;
         if (chosenModuleId) {
             document.getElementById('newFunctionModuleId').value = chosenModuleId;
         }
@@ -141,7 +145,7 @@
         .then(function (data) {
             if (data.success) {
                 var funcSel         = document.getElementById('function_module_id');
-                var currentModuleId = document.getElementById('add_module_id').value;
+                var currentModuleId = document.getElementById('module_id').value;
 
                 // Only add to visible function dropdown if same module is selected
                 if (String(data.function.module_id) === String(currentModuleId)) {
@@ -172,7 +176,7 @@
     // ─────────────────────────────────────────────────────────────────
     // EXISTING: Module → load Function Access dropdown via AJAX
     // ─────────────────────────────────────────────────────────────────
-    document.getElementById('add_module_id').addEventListener('change', function () {
+    document.getElementById('module_id').addEventListener('change', function () {
         var moduleId = this.value;
         var funcSel  = document.getElementById('function_module_id');
 
@@ -197,4 +201,7 @@
             });
     });
 
+
 })();
+
+

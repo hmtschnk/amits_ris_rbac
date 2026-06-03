@@ -23,13 +23,13 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // PART ADD MODAL 
-    const addModuleSelect = document.getElementById('module_id');
-    const addFunctionSelect = document.getElementById('function_module_id');
-    if (addModuleSelect) {
-        addModuleSelect.addEventListener('change', function() {
-            fetchFunctions(this.value, addFunctionSelect);
-        });
-    }
+    // const addModuleSelect = document.getElementById('module_id');
+    // const addFunctionSelect = document.getElementById('function_module_id');
+    // if (addModuleSelect) {
+    //     addModuleSelect.addEventListener('change', function() {
+    //         fetchFunctions(this.value, addFunctionSelect);
+    //     });
+    // }
 
     // PART EDIT MODALS 
     document.querySelectorAll('.edit-module-select').forEach(select => {

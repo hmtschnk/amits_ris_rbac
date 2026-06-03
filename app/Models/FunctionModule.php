@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class FunctionModule extends Model
 { 
     protected $table = 'function_module';
+    public $timestamps = false;
     protected $fillable = [
+        'module_id', 
         'function_id', 
         'function_name', 
         'description', 
-        'module_id', 
+        
         
     ];
 

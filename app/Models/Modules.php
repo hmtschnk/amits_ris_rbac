@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Modules extends Model {
-    protected $fillable = ['name'];
+    protected $table = 'modules'; 
+    public $timestamps = false;
+    protected $fillable = ['name', 'description'];
 
     public function functions() {
         return $this->hasMany(FunctionModule::class, 'module_id');

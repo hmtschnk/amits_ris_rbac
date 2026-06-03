@@ -1,4 +1,4 @@
-<div class="modal fade" id="addRoleAccessModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="addRoleAccessModal" tabindex="-1" aria-hidden="true"
     data-store-module-url="{{ route('module-config.store-module') }}"
     data-store-function-url="{{ route('module-config.store-function') }}">
     <div class="modal-dialog modal-lg">
@@ -114,3 +114,4 @@
         </div>
     </div>
 </div>
+

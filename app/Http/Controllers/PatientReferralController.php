@@ -113,27 +113,6 @@ class PatientReferralController extends Controller
     /**
      * STORE DATA
      */
-    // public function store(Request $request)
-    // {
-    //     // Save form inputs directly as raw text data strings to match database schema columns
-    //     PatientReferral::create([
-    //         'patient_id'       => $request->patient_id,
-    //         'patient_name'     => $request->patient_name,
-    //         'gender'           => $request->gender,
-    //         'age'              => $request->age,
-    //         'xray_type_id'     => $request->xray_type_id, // This holds the string 'Plain X-Ray', etc.
-    //         'referring_clinic' => $request->referring_clinic_id, // Saves string 'SENA REFERRING CLINIC (TESTING 1)'
-    //         'xray_panel'       => $request->xray_panel_id,       // Saves string 'KLINIK ZAHRA GEMAS'
-    //     ]);
-
-    //     return redirect()
-    //         ->route('patient_referral.listing')
-    //         ->with('success', 'Patient referral created successfully');
-    // }
-    
-    /**
-     * STORE DATA
-     */
     public function store(Request $request)
     {
         // Save form inputs directly as raw text data strings to match database schema columns

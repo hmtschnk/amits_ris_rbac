@@ -47,7 +47,6 @@
                 </li>
             @endif
             
-            
         </ul>
     </div>
 </aside>

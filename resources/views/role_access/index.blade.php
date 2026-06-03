@@ -186,6 +186,9 @@
 <script src="{{ asset('assets/js/features/role-permission-button.js') }}"></script>
 <script src="{{ asset('assets/js/features/function-module-addmodal.js') }}"></script>
 
+{{-- <script src="{{ asset('assets/js/features/role-permission-button.js') }}"></script> --}}
+{{-- function-module-addmodal.js is loaded via @push in add_modal.blade.php --}}
+
 @endsection
                                     
                                     
