@@ -1,11 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PatientReferralController;
 use App\Http\Controllers\ModuleConfigController;
+
+
+//Auth
+Route::get('/', [AuthController::class, 'index'])->name('home');
+Route::get('/login', [AuthController::class, 'show'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+Route::get('/logout', [AuthController::class, 'show']);
+Route::post('/logout', [AuthController::class, 'destroy'])->name('auth.destroy');
 
 // Role Access Routes
 Route::get('/role-access', [RolePermissionController::class, 'index'])
@@ -17,12 +25,7 @@ Route::post('/role-access/store', [RolePermissionController::class, 'store'])->n
 Route::put('/role-access/{id}', [RolePermissionController::class, 'update'])->name('role-access.update');
 Route::delete('/role-access/{id}', [RolePermissionController::class, 'destroy'])->name('role-access.destroy');
 
-//Auth
-Route::get('/', [AuthController::class, 'show'])->name('home');
-Route::get('/login', [AuthController::class, 'show'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
-Route::get('/logout', [AuthController::class, 'show']);
-Route::post('/logout', [AuthController::class, 'destroy'])->name('auth.destroy');
+
 
 // Module Config AJAX Routes (no page, JSON only)
 Route::group(['middleware' => ['auth']], function () {
@@ -32,7 +35,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/module-config/store-function', [ModuleConfigController::class, 'storeFunction'])
         ->name('module-config.store-function');
 });
-
 
 // Patient Referral Feature Route Management
 Route::group(['middleware' => ['auth']], function () {
@@ -46,4 +48,6 @@ Route::group(['middleware' => ['auth']], function () {
     // Fallback placeholders to prevent crashes if these buttons are clicked
     Route::get('/patient-referral/{id}/pdf', [PatientReferralController::class, 'listing'])->name('patient_referral.pdf');
     Route::get('/patient-referral/{id}/email', [PatientReferralController::class, 'listing'])->name('patient_referral.email');
+
+
 });

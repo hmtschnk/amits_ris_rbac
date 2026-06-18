@@ -30,7 +30,7 @@
                             <select class="form-select" id="module_id" name="module_id" required>
                                 <option value="" selected disabled>Choose Module</option>
                                 @foreach($modules as $module)
-                                    <option value="{{ $module->id }}">{{ $module->name }}</option>
+                                    <option value="{{ $module->id }}">{{ $module->module_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -75,7 +75,7 @@
                                     <select class="form-select form-select-sm text-xs" id="newFunctionModuleId">
                                         <option value="" disabled selected>Select module for this function</option>
                                         @foreach($modules as $module)
-                                            <option value="{{ $module->id }}">{{ $module->name }}</option>
+                                            <option value="{{ $module->id }}">{{ $module->module_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

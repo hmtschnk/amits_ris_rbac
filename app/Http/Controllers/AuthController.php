@@ -9,7 +9,11 @@ class AuthController extends Controller
 {
     public function show()
     {
-         return view('auth.login');
+       
+        if (Auth::check()) {
+            return redirect()->route('home');
+        }
+        return view('auth.login');
     }
 
     public function login(Request $request)
@@ -22,13 +26,22 @@ class AuthController extends Controller
         // This checks the users table and the hashed password
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate(); // prevents session fixation
-            return redirect()->route('role-access.index');
+            return redirect()->route('home');
             // return redirect()->intended(route('storage.index'));
         }
 
 
         return back()->with('error', 'Invalid credentials.');
        
+    }
+
+    public function index()
+    {
+        // If not logged in, take them back to login page
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+        return view('welcome');
     }
 
     public function destroy(Request $request)

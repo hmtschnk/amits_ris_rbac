@@ -17,15 +17,15 @@ class ModuleConfigController extends Controller
     public function storeModule(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:100|unique:modules,name',
+            'module_name' => 'required|string|max:100|unique:modules,module_name',
         ]);
 
-        $module = Modules::create(['name' => $request->name]);
+        $module = Modules::create(['module_name' => $request->module_name]);
 
         return response()->json([
             'success' => true,
-            'module'  => ['id' => $module->id, 'name' => $module->name],
-            'message' => 'Module "' . $module->name . '" created successfully.',
+            'module'  => ['id' => $module->id, 'name' => $module->module_name],
+            'message' => 'Module "' . $module->module_name . '" created successfully.',
         ]);
     }
 

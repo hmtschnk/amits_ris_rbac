@@ -220,9 +220,12 @@
                             <a href="{{ route('patient_referral.listing') }}" class="btn btn-outline-secondary btn-sm me-2">
                                 <i class="fa fa-times pe-1"></i>Cancel
                             </a>
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fa fa-save pe-1"></i>{{ isset($record) ? 'Update' : 'Save' }}
-                            </button>
+
+                            @if (!($isViewOnly ?? false))
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-save pe-1"></i>{{ isset($record) ? 'Update' : 'Save' }}
+                                </button>
+                            @endif
                         </div>
                     </form>
                 </div>
@@ -247,5 +250,10 @@
         
         $('#age').val(age);
     });
+
+    @if($isViewOnly ?? false)
+        $('form input, form select, form textarea').prop('disabled', true);
+    @endif
+
 </script>
 @endpush

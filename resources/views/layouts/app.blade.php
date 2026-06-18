@@ -36,7 +36,7 @@
 
     @auth
         {{-- @if (in_array(request()->route()->getName(), ['login', 'sign-in-static', 'sign-up-static', 'register', 'recover-password', 'rtl', 'virtual-reality'])) --}}
-        @if (in_array(request()->route()->getName(), ['home', 'login', 'auth.login']))
+        @if (in_array(request()->route()->getName(), ['login', 'auth.login']))
             @yield('content')
         @else
             @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))

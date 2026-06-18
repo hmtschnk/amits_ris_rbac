@@ -27,7 +27,7 @@
                             <select name="module_id" class="form-select edit-module-select" data-assignment-id="{{ $assignment->id }}" required>
                                 @foreach($modules as $module)
                                     <option value="{{ $module->id }}" {{ $assignment->functionModule->module_id == $module->id ? 'selected' : '' }}>
-                                        {{ $module->name }}
+                                        {{ $module->module_name }}
                                     </option>
                                 @endforeach
                             </select>

@@ -118,10 +118,11 @@
                                                class="btn btn-icon-only btn-rounded btn-info mb-0 me-1 btn-sm d-flex align-items-center justify-content-center"
                                                data-toggle="tooltip" 
                                                data-placement="top" 
-                                               title="View/Edit Details">
-                                                <i class="fa fa-edit"></i>
+                                               title="{{ $isViewOnly ? 'View Details' : 'View/Edit Details' }}">
+                                               <i class="fa {{ $isViewOnly ? 'fa-eye' : 'fa-edit' }}"></i>
                                             </a>
 
+                                            @if (!$isViewOnly)
                                             <a href="{{ route('patient_referral.pdf', $referral->id) }}" 
                                                class="btn btn-icon-only btn-rounded btn-primary mb-0 me-1 btn-sm d-flex align-items-center justify-content-center"
                                                target="_blank"
@@ -130,7 +131,9 @@
                                                title="Print PDF">
                                                 <i class="fa fa-print"></i>
                                             </a>
+                                            @endif
                                             
+                                            @if (!$isViewOnly)
                                             @if($referral->patient_email)
                                                 <a href="{{ route('patient_referral.email', $referral->id) }}" 
                                                 class="btn btn-icon-only btn-rounded btn-success mb-0 me-1 btn-sm d-flex align-items-center justify-content-center"
@@ -149,8 +152,10 @@
                                                     <i class="fa fa-envelope text-secondary"></i>
                                                 </button>
                                             @endif
+                                            @endif
 
-                                            @if($showDeleteButton)
+                                            {{-- @if($showDeleteButton) --}}
+                                            @if (Auth::user()->hasPermission('Patient Referral', 'patref_btn_delete', 'EDIT'))
                                             <form action="{{ route('patient_referral.destroy', $referral->id) }}" 
                                                   method="POST" 
                                                   style="display: inline;"

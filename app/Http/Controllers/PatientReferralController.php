@@ -43,8 +43,14 @@ class PatientReferralController extends Controller
 
     $showReferringClinic = true;
     $showXrayPanel = true;
-    $showAddButton = true;
-    $showDeleteButton = $user ? $user->hasRoles(['MASTER_ADMIN', 'MANAGER']) : false;
+    // $showAddButton = true;
+    // $showDeleteButton = $user ? $user->hasRoles(['MASTER_ADMIN', 'MANAGER']) : false;
+    
+    
+    $showAddButton = $user->hasPermission('Patient Referral', 'patref_btn_add', 'EDIT'); 
+    $showDeleteButton = $user->hasPermission('Patient Referral', 'patref_btn_delete', 'EDIT'); 
+
+    $isViewOnly = !$showAddButton && !$showDeleteButton && $user->hasPermission('Patient Referral', 'patref_view_list', 'VIEW');
 
     $referringClinicSel = [
         'SENA REFERRING CLINIC (TESTING 1)' => 'SENA REFERRING CLINIC (TESTING 1)',
@@ -54,6 +60,7 @@ class PatientReferralController extends Controller
         'KLINIK ZAHRA GEMAS' => 'KLINIK ZAHRA GEMAS',
     ];
 
+    
     return view('patient_referral.listing', compact(
         'referrals',
         'search',
@@ -63,6 +70,7 @@ class PatientReferralController extends Controller
         'showDeleteButton',
         'referringClinicSel',
         'xrayPanelSel',
+        'isViewOnly'
     ));
    }
     /**
@@ -144,6 +152,15 @@ class PatientReferralController extends Controller
   {
     $record = PatientReferral::findOrFail($id);
 
+    /** @var \App\Models\User $user */
+    $user = Auth::user();
+
+    $hasEditPermission = $user->hasPermission('Patient Referral', 'patref_btn_add', 'EDIT') || 
+                          $user->hasPermission('Patient Referral', 'patref_btn_delete', 'EDIT');
+
+   
+    $isViewOnly = !$hasEditPermission && $user->hasPermission('Patient Referral', 'patref_view_list', 'VIEW');
+
     $xrayTypes = [
         'Plain X-Ray',
         'Mammogram',
@@ -179,7 +196,7 @@ class PatientReferralController extends Controller
         'company' => (object)['phone' => '+60 6-8765 4321']
     ];
 
-    return view('patient_referral.form', compact('record', 'xrayTypes', 'referringClinic', 'xrayPanel'));
+    return view('patient_referral.form', compact('record', 'xrayTypes', 'referringClinic', 'xrayPanel','isViewOnly' ));
    }
     
     /**

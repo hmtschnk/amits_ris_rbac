@@ -57,7 +57,7 @@
                 'X-CSRF-TOKEN': CSRF,
                 'Accept':       'application/json',
             },
-            body: JSON.stringify({ name: name }),
+            body: JSON.stringify({ module_name: name }),
         })
         .then(function (r) { return r.json(); })
         .then(function (data) {

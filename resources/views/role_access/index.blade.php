@@ -37,7 +37,7 @@
                                         <option value="" disabled @if(empty($search['module_id'])) selected @endif>Select Module</option>
                                         @foreach($modules as $module)
                                             <option value="{{ $module->id }}" @if(@$search['module_id'] == $module->id) selected @endif>
-                                                {{ $module->name }}
+                                                {{ $module->module_name }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -129,7 +129,7 @@
                                 
                                 {{-- Data from Module Table --}}
                                 <td 
-                                    class="mb-0 text-center text-secondary text-xs">{{ $assignment->functionModule->modules->name }}
+                                    class="mb-0 text-center text-secondary text-xs">{{ $assignment->functionModule->modules->module_name }}
                                 </td>
 
                                 {{-- Data from FunctionModule Table --}}
