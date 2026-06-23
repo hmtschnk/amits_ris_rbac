@@ -13,7 +13,7 @@
             @if (Auth::user()->hasPermission('Dashboard', null, 'VIEW'))
             {{-- || Auth::user()->hasPermission('Dashboard', null, 'EDIT')) --}}
                 <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteName() == 'home' ? 'active' : '' }}" href="{{ route('home') }}">
+                    <a class="nav-link {{ Route::currentRouteName() == 'dashboard' ? 'active' : '' }}" href="{{ route('dashboard') }}">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa fa-chart-line text-primary text-sm opacity-10"></i>
                         </div>

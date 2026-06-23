@@ -15,6 +15,17 @@ Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::get('/logout', [AuthController::class, 'show']);
 Route::post('/logout', [AuthController::class, 'destroy'])->name('auth.destroy');
 
+use App\Http\Controllers\DashboardController;
+
+Route::middleware(['auth'])->group(function () {
+    
+    // The core Dashboard Router
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    
+});
+
+
 // Role Access Routes
 Route::get('/role-access', [RolePermissionController::class, 'index'])
     ->name('role-access.index')
