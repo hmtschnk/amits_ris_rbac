@@ -7,6 +7,7 @@ use App\Models\Modules;
 use App\Models\FunctionModule;
 use App\Models\Assignment;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class RolePermissionController extends Controller
 {
@@ -71,8 +72,16 @@ class RolePermissionController extends Controller
 
         $request->validate([
             'role_id'            => 'required|exists:roles,id',
-            'function_module_id' => 'required|exists:function_module,id',
+            'function_module_id' => ['required', 'exists:function_module,id',
+                                    Rule::unique('assignment')->where(function ($query) use ($request) {
+                                    return $query->where('role_id', $request->role_id)
+                                                   ->where('permission', $request->permission);
+                                }),
+            ],
             'permission'         => 'required|in:VIEW,EDIT',
+        ], [
+
+            'function_module_id.unique' => 'Access for this function has already been granted to this role.'
         
         ]);
 
@@ -90,8 +99,18 @@ class RolePermissionController extends Controller
     {
         $request->validate([
             'role_id'            => 'required|exists:roles,id',
-            'function_module_id' => 'required|exists:function_module,id',
-            'permission'         => 'required',
+            'function_module_id' => ['required',
+                                    'exists:function_module,id',
+                                    Rule::unique('assignment')->where(function ($query) use ($request) {
+                                    return $query->where('role_id', $request->role_id)
+                                                 ->where('permission', $request->permission);
+                                })->ignore($id),
+            ],
+
+            'permission'         => 'required|in:VIEW,EDIT',
+        ],[
+
+            'function_module_id.unique' => 'This role already has an access permission set for this function.',
         ]);
 
         $assignment = Assignment::findOrFail($id);

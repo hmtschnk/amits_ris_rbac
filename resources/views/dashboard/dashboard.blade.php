@@ -148,20 +148,46 @@
     </style>
 
     {{-- @if (auth()->user()->hasRoles(['MASTER_ADMIN','MANAGER'])) --}}
+    @if (Auth::user()->hasPermission('Dashboard', 'dsb_topnav_selectGroup', 'VIEW'))
         @include('layouts.navbars.auth.topnav', ['title' => 'Dashboard','selectOption' => $userGroupSel,'groupname'=> $userGroupName, 'submitform' => $submit])
-    {{-- @else --}}
+    @else
         @include('layouts.navbars.auth.topnav', ['title' => 'Dashboard'])
-    {{-- @endif --}}
+    @endif
             
     <div class="container-fluid py-2">
         <div class="row">
-        {{-- @include('components.alert') --}}
+         {{-- @include('components.alert') --}}
 
-            {{-- @if (auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','MANAGER','SECONDARY','REGISTER'])) --}}
-                <div class="{{-- {{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','MANAGER','SECONDARY','REFERRING','REGISTER']) ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6' --}} }} mb-xl-0 mb-4">
-                    {{-- <a class="navbar-brand m-0" href="{{ route('worklist','UPLOADED')}}"> --}}
-                    <a class="nav-link" href="#">
-                        
+
+        @php
+            $visibleCardCount = collect([
+                     'dsb_card_uploaded',
+                     'dsb_card_stored',
+                     'dsb_card_new',
+                     'dsb_card_assigned',
+                     'dsb_card_final',
+                 ])
+                 ->filter(fn ($permission) => Auth::user()->hasPermission('Dashboard', $permission, 'VIEW'))
+                 ->count();
+
+             $allCardsVisible = $visibleCardCount >= 5;
+
+             // Grid class for the cards: Uploaded, Stored, Assigned
+             $USAcardGrid = $allCardsVisible ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6';
+
+             // Grid class for the cards: New, Final
+             $newFinalcardGrid = $allCardsVisible ? 'col-xl-3 col-sm-6' : 'col-xl-4 col-sm-6';
+
+             // true = show "WAITING / REPORTING" wording instead of "NEW / ASSIGNED"
+             $useNewAssgLabel = Auth::user()->hasPermission('Dashboard', 'dsb_card_label', 'VIEW');   
+        @endphp
+         
+         {{-- UPLOADED --}} 
+         {{-- @if (auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','MANAGER','SECONDARY','REGISTER'])) --}}
+               {{--  <div class=" {{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','MANAGER','SECONDARY','REFERRING','REGISTER']) ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4"> --}}
+         @if (Auth::user()->hasPermission('Dashboard', 'dsb_card_uploaded', 'VIEW'))             
+                <div class="{{ $USAcardGrid }} mb-xl-0 mb-4">
+                    <a class="navbar-brand m-0" href="{{--{{ route('worklist','UPLOADED') }}--}}">
                         <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
                             <div class="card-body p-3" style="background-color: #ffffff;">
                                 <div class="row">
@@ -174,10 +200,9 @@
                                             <span class="text-body text-sm font-weight-normal d-block mb-0" style="font-size: 12px !important; ">
                                                 {{ui_label('dsb_asof')}} {{ date('d/m/Y') }}</span>
                                                 <!--as of {{ date('d/m/Y') }}</span>-->
-                                            
                                         </div>
                                     </div>                                    
-                                    <div class="col-4 text-end">
+                                    <div class="col-4 text-end"> {{-- button uploaded --}} 
                                         <div class="icon icon-shape bg-dark shadow-primary rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
                                             <i class="fa fa-upload text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
                                         </div>
@@ -187,124 +212,149 @@
                         </div>
                     </a>
                 </div>
-		{{-- <div class="{{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4">
-		    <a class="navbar-brand m-0" href="{{ route('worklist','STORED')}}"> --}}
-			
-            <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
-                <div class="card-body p-3" style="background-color: #e8f5e9;">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="numbers">
-                                <p class="text-sm mb-1 text-uppercase font-weight-bold">Stored</p>
-                                <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
-                                    {{ $storage->count() }}
-                                </h5>
-                                <span class="text-body font-weight-normal d-block mb-0" style="font-size: 12px !important;">
-                                    {{ui_label('dsb_forlast')}} {{ $month }} {{ui_label('dsb_months')}}</span>
-                                    <!--For last {{ $month }} months</span>-->
-                                {{-- <p class="text-xs mb-0 text-success font-weight-bold">Storage only</p> --}}
+            @endif
+
+                {{-- STORED --}} 
+            @if (Auth::user()->hasPermission('Dashboard', 'dsb_card_stored', 'VIEW'))
+               {{--  <div class="{{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4"> --}}
+                <div class="{{ $USAcardGrid }} mb-xl-0 mb-4">
+                    <a class="navbar-brand m-0" href="{{-- {{   route('worklist','STORED')}}--}}"> 
+                        <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
+                            <div class="card-body p-3" style="background-color: #e8f5e9;">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-1 text-uppercase font-weight-bold">Stored</p>
+                                            <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
+                                                {{ $storage->count() }}
+                                            </h5>
+                                            <span class="text-body font-weight-normal d-block mb-0" style="font-size: 12px !important;">
+                                                {{ui_label('dsb_forlast')}} {{ $month }} {{ui_label('dsb_months')}}</span>
+                                                <!--For last {{ $month }} months</span>-->
+                                            {{-- <p class="text-xs mb-0 text-success font-weight-bold">Storage only</p> --}}
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end"> {{-- button stored --}}
+                                        <div class="icon icon-shape bg-gradient-success shadow-primary rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
+                                            <i class="fa fa-database text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-4 text-end">
-                            <div class="icon icon-shape bg-gradient-success shadow-primary rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
-                                <i class="fa fa-database text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
-                            </div>
-                        </div>
-                    </div>
+                    </a>
                 </div>
-            </div>
-		    </a>
-		</div>
-            {{-- @endif --}}
-	    {{-- @if (!Auth::user()->hasRole('REFERRING'))
-            <div class="{{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-3 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4">
-                <a class="navbar-brand m-0" href="{{ route('worklist','NEW')}}"> --}}
-                    
-                    <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
-                        <div class="card-body p-3" style="background-color: #fff3e0;">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-sm mb-1 text-uppercase font-weight-bold">{{-- {{ auth()->user()->hasRoles(['XRAY_FACILITY','SECONDARY','REFERRING']) ? 'WAITING' : 'NEW' }} --}}</p>
-                                        <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
-                                            {{ $new->count() }}
-                                        </h5>
-                                        <span class="text-body font-weight-normal d-block mb-0" style="font-size: 12px !important;">
-                                            {{ui_label('dsb_asof')}} {{ date('d/m/Y') }}</span>
-                                            <!--as of {{ date('d/m/Y') }}</span>-->
-                                        
+            @endif
+
+            {{-- NEW --}}
+            {{-- @if (!Auth::user()->hasRole('REFERRING')) --}}
+            @if (Auth::user()->hasPermission('Dashboard', 'dsb_card_new', 'VIEW'))
+                {{-- <div class="{{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-3 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4"> --}}
+                <div class="{{ $newFinalcardGrid }} mb-xl-0 mb-4">
+                    <a class="navbar-brand m-0" href=" {{--{{ route('worklist','NEW') }}--}} "> 
+                        
+                        <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
+                            <div class="card-body p-3" style="background-color: #fff3e0;">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            {{-- <p class="text-sm mb-1 text-uppercase font-weight-bold"> {{ auth()->user()->hasRoles(['XRAY_FACILITY','SECONDARY','REFERRING']) ? 'WAITING' : 'NEW' }} </p> --}}
+                                             <p class="text-sm mb-1 text-uppercase font-weight-bold">
+                                                {{ $useNewAssgLabel ? 'WAITING' : 'NEW' }}
+                                            </p>
+                                            <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
+                                                {{ $new->count() }}
+                                            </h5>
+                                            <span class="text-body font-weight-normal d-block mb-0" style="font-size: 12px !important;">
+                                                {{ui_label('dsb_asof')}} {{ date('d/m/Y') }}</span>
+                                                <!--as of {{ date('d/m/Y') }}</span>-->
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div class="icon icon-shape bg-warning shadow-primary rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
-                                        <i class="fa fa-share-from-square text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            {{-- <div class="{{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4">
-                <a class="navbar-brand m-0" href="{{ route('worklist','ASSIGNED') }}"> --}}
-                    
-                    <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
-                        <div class="card-body p-3" style="background-color: #e3f2fd;">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <div class="text-sm mb-1 text-uppercase font-weight-bold">{{-- {{ auth()->user()->hasRoles(['XRAY_FACILITY','SECONDARY','REFERRING']) ? 'REPORTING' : 'Assigned' }}@if ($showMyself) <font size="1.5px">Myself</font> @endif --}}</div>
-                                        <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
-                                            {{ $assign->count() }}
-                                        </h5>
-                                        <span class="text-body font-weight-normal d-block mb-0" style="font-size: 12px !important;">
-                                            {{ui_label('dsb_asof')}} {{ date('d/m/Y') }}</span>
-                                            <!--as of {{ date('d/m/Y') }}</span>-->
-                                        
-                                    </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div class="icon icon-shape bg-gradient-info shadow-danger rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
-                                        <i class="fa fa-user-md text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+                                    <div class="col-4 text-end"> {{-- button new --}}
+                                        <div class="icon icon-shape bg-warning shadow-primary rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
+                                            <i class="fa fa-share-from-square text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-            {{-- <div class="{{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-3 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4">
-                <a class="navbar-brand m-0" href="{{ route('worklist', 'FINAL') }}"> --}}
-                    
-                    <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
-                        <div class="card-body p-3" style="background-color: #e8f5e9;">
-                            <div class="row">
-                                <div class="col-8">
-                                    <div class="numbers">
-                                        <p class="text-sm mb-1 text-uppercase font-weight-bold">Final @if($showMyself)<font size="1.5px">Myself</font> @endif</p>
-                                        <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
-                                            {{ number_format($review->count(),0,'.',',') }}
-                                        </h5>
-                                        <span class="text-body font-weight-normal d-block mb-0" style="font-size: 12px !important;">
-                                            {{ui_label('dsb_forlast')}} {{ $month }} {{ui_label('dsb_months')}}</span>
-                                            <!--For last {{ $month }} months</span>-->
-                                        
+                    </a>
+                </div>
+            @endif
+
+                {{-- ASSIGNED --}}
+            @if (Auth::user()->hasPermission('Dashboard', 'dsb_card_assigned', 'VIEW'))
+                {{-- <div class=" {{  auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6' }}  mb-xl-0 mb-4"> --}}
+                 <div class="{{ $USAcardGrid }} mb-xl-0 mb-4">
+                    <a class="navbar-brand m-0" href=" {{--{{  route('worklist','ASSIGNED') }} --}} "> 
+                        
+                        <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
+                            <div class="card-body p-3" style="background-color: #e3f2fd;">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            {{-- <div class="text-sm mb-1 text-uppercase font-weight-bold"> {{ auth()->user()->hasRoles(['XRAY_FACILITY','SECONDARY','REFERRING']) ? 'REPORTING' : 'Assigned' }}@if ($showMyself) <font size="1.5px">Myself</font> @endif </div> --}}
+                                            <div class="text-sm mb-1 text-uppercase font-weight-bold">
+                                                {{ $useNewAssgLabel ? 'REPORTING' : 'ASSIGNED' }}
+                                                @if ($showMyself) <font size="1.5px">Myself</font> @endif
+                                            </div>
+                                            <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
+                                                {{ $assign->count() }}
+                                            </h5>
+                                            <span class="text-body font-weight-normal d-block mb-0" style="font-size: 12px !important;">
+                                                {{ui_label('dsb_asof')}} {{ date('d/m/Y') }}</span>
+                                                <!--as of {{ date('d/m/Y') }}</span>-->
+                                            
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <div class="icon icon-shape bg-gradient-success shadow-success rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
-                                        <i class="fa fa-notes-medical text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+                                    <div class="col-4 text-end">  {{-- button assigned --}}
+                                        <div class="icon icon-shape bg-gradient-info shadow-danger rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
+                                            <i class="fa fa-user-md text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>
+            @endif
+
+                {{-- FINAL --}}
+            @if (Auth::user()->hasPermission('Dashboard', 'dsb_card_final', 'VIEW'))  
+                {{-- <div class="  {{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-3 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4"> --}}
+                <div class="{{ $newFinalcardGrid  }} mb-xl-0 mb-4">
+                    <a class="navbar-brand m-0" href=" {{-- {{  route('worklist', 'FINAL') }} --}} "> 
+                        <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
+                            <div class="card-body p-3" style="background-color: #e8f5e9;">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-1 text-uppercase font-weight-bold">Final @if($showMyself)<font size="1.5px">Myself</font> @endif</p>
+                                            <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
+                                                {{ number_format($review->count(),0,'.',',') }}
+                                            </h5>
+                                            <span class="text-body font-weight-normal d-block mb-0" style="font-size: 12px !important;">
+                                                {{ui_label('dsb_forlast')}} {{ $month }} {{ui_label('dsb_months')}}</span>
+                                                <!--For last {{ $month }} months</span>-->
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end"> {{-- button final --}}
+                                        <div class="icon icon-shape bg-gradient-success shadow-success rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
+                                            <i class="fa fa-notes-medical text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
         </div>
-	{{-- @endif --}}
+	        @endif
+        
         <div class="row mt-4">
             {{-- @if ( auth()->user()->hasRoles(['MASTER_ADMIN','ADMIN_RADIOGRAPHER','ADMIN_ACCOUNTANT','ACCOUNTANT','RADIOGRAPHER','MANAGER'])) --}}
+            @if (Auth::user()->hasPermission('Dashboard', 'dsb_overview_panel', 'VIEW'))
                 <div class="col-lg-2 mb-lg-0 mb-4">                    
                     <div class="row">
                         <!-- X-Ray Facilities -->
@@ -343,14 +393,14 @@
                             </div>
                         </div>
                     </div>
-
-		    <div class="col mt-2">
-			<div class="card">			    
-                <canvas id="xrayPieChart" height="200"></canvas>
-			</div>
-		    </div>
+                    <!-- PIECHART -->
+                    <div class="col mt-2">
+                    <div class="card">			    
+                        <canvas id="xrayPieChart" height="200"></canvas>
+                    </div>
+                    </div>
                 </div>
-            {{-- @endif --}}
+            @endif
             <script>
                 window.chartLabels = {
                     total_completed: "{{ ui_label('dsb_graph1_complete') }}",
@@ -364,8 +414,17 @@
                     daily_x: "{{ ui_label('dsb_graph2_x') }}"
                 };
             </script>
-            {{-- @if (!auth()->user()->hasRoles(['REGISTER','REFERRING']))
-                <div class="{{ auth()->user()->hasRoles(['MASTER_ADMIN','ADMIN_RADIOGRAPHER','ADMIN_ACCOUNTANT','ACCOUNTANT','RADIOGRAPHER','MANAGER']) ? 'col-lg-5' : 'col-lg-6' }} mb-lg-0 mb-4"> --}}
+
+             @php
+                $chartOvwSection = Auth::user()->hasPermission('Dashboard', 'dsb_overview_panel', 'VIEW')
+                    ? 'col-lg-5' : 'col-lg-6';
+            @endphp
+
+            <!-- GRAPH 1 : TOTAL SERVICE -->
+            {{-- @if (!auth()->user()->hasRoles(['REGISTER','REFERRING'])) --}}
+                {{-- <div class=" {{ auth()->user()->hasRoles(['MASTER_ADMIN','ADMIN_RADIOGRAPHER','ADMIN_ACCOUNTANT','ACCOUNTANT','RADIOGRAPHER','MANAGER']) ? 'col-lg-5' : 'col-lg-6' }}  mb-lg-0 mb-4">  --}}
+            @if (Auth::user()->hasPermission('Dashboard', 'dsb_graph_service_monthly', 'VIEW')) 
+                <div class="{{  $chartOvwSection }} mb-lg-0 mb-4">
                     <div class="card z-index-2 h-100">
                         <div class="card-header pb-0 pt-3 bg-transparent">
                             <!--<h6 class="mb-2">Total Service Completed by Month</h6>-->
@@ -380,7 +439,11 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="{{ auth()->user()->hasRoles(['MASTER_ADMIN','ADMIN_RADIOGRAPHER','ADMIN_ACCOUNTANT','ACCOUNTANT','RADIOGRAPHER','MANAGER']) ? 'col-lg-5' : 'col-lg-6' }} mb-lg-0 mb-4"> --}}
+            @endif
+                <!-- GRAPH 2 : VS -->
+                {{-- <div class=" {{ auth()->user()->hasRoles(['MASTER_ADMIN','ADMIN_RADIOGRAPHER','ADMIN_ACCOUNTANT','ACCOUNTANT','RADIOGRAPHER','MANAGER']) ? 'col-lg-5' : 'col-lg-6' }} mb-lg-0 mb-4">  --}}
+            @if (Auth::user()->hasPermission('Dashboard', 'dsb_graph_upload_view_daily', 'VIEW'))  
+                <div class="{{ $chartOvwSection }} mb-lg-0 mb-4">
                     <div class="card z-index-2 h-100">
                         <div class="card-header pb-0 pt-3 bg-transparent">
                             <!--<h6 class="mb-2">Upload Case vs Image View</h6>-->
@@ -394,7 +457,7 @@
                         </div>
                     </div>
                 </div>
-            {{-- @endif --}}
+            @endif
             
         </div>
 
@@ -435,102 +498,104 @@
         </div>
         @endif --}}
 
+        <!-- SUMMARY -->
         {{-- @if (!auth()->user()->hasRoles(['XRAY_FACILITY','SECONDARY','REGISTER','REFERRING'])) --}}
-        <div class="row mt-1">
-            <div class="col-lg-12 mb-lg-0 mb-4">
-                <div class="card">
-                    <div class="card-header pb-0 p-3">
-                        <!--<h6 class="mb-2">Summary By Radiologist / Cardiologist</h6>-->
-                        <h6 class="mb-2">{{ui_label('dsb_summary_rad')}}</h6>
-                        <!--<span class="text-body text-sm font-weight-normal">For last {{ $month }} months </span>-->
-                        <span class="text-body text-sm font-weight-normal">{{ui_label('dsb_forlast')}} {{ $month }} {{ui_label('dsb_months')}} </span>
-                    </div>
-                    <div class="card-body p-3">
-                        <div class="table-responsive p-0">
-                            <table class="table table-scroll">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <!--<h6 class="text-white text-xxs font-weight-bolder text-start">Name</h6>-->
-                                            <h6 class="text-white text-xxs font-weight-bolder text-start">{{ui_label('dsb_name_rad')}}</h6>
-                                        </th>
-                                        <th>
-                                            <h6 class="text-white text-xxs font-weight-bolder">Assigned / Redo</h6>
-                                        </th>
-                                        <th>
-                                            <h6 class="text-white text-xxs font-weight-bolder">Final</h6>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                    @php
-                                        $total_assign = $total_final = 0;
-                                    @endphp
-                                <tbody>
-                                    @foreach ($summary_radiologist as $data)
+        @if (Auth::user()->hasPermission('Dashboard', 'dsb_summary_table', 'VIEW'))
+            <div class="row mt-1">
+                <div class="col-lg-12 mb-lg-0 mb-4">
+                    <div class="card">
+                        <div class="card-header pb-0 p-3">
+                            <!--<h6 class="mb-2">Summary By Radiologist / Cardiologist</h6>-->
+                            <h6 class="mb-2">{{ui_label('dsb_summary_rad')}}</h6>
+                            <!--<span class="text-body text-sm font-weight-normal">For last {{ $month }} months </span>-->
+                            <span class="text-body text-sm font-weight-normal">{{ui_label('dsb_forlast')}} {{ $month }} {{ui_label('dsb_months')}} </span>
+                        </div>
+                        <div class="card-body p-3">
+                            <div class="table-responsive p-0">
+                                <table class="table table-scroll">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <!--<h6 class="text-white text-xxs font-weight-bolder text-start">Name</h6>-->
+                                                <h6 class="text-white text-xxs font-weight-bolder text-start">{{ui_label('dsb_name_rad')}}</h6>
+                                            </th>
+                                            <th>
+                                                <h6 class="text-white text-xxs font-weight-bolder">Assigned / Redo</h6>
+                                            </th>
+                                            <th>
+                                                <h6 class="text-white text-xxs font-weight-bolder">Final</h6>
+                                            </th>
+                                        </tr>
+                                    </thead>
                                         @php
-                                            $total_assign += $data->assign;
-                                            $total_final += $data->final_report;
+                                            $total_assign = $total_final = 0;
                                         @endphp
+                                    <tbody>
+                                        @foreach ($summary_radiologist as $data)
+                                            @php
+                                                $total_assign += $data->assign;
+                                                $total_final += $data->final_report;
+                                            @endphp
+                                            <tr>
+                                                <td>
+                                                    <h6 class="text-xs mb-0 font-weight-normal">{{ $data->radiologist_name }}</h6>
+                                                </td>
+                                                <td>
+                                                    <h6 class="text-sm mb-0 text-center font-weight-normal">{{ $data->assign }}</h6>
+                                                </td>
+                                                <td>
+                                                    <h6 class="text-sm mb-0 text-center font-weight-normal">{{ number_format($data->final_report,0,'.',',') }}</h6>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
                                         <tr>
                                             <td>
-                                                <h6 class="text-xs mb-0 font-weight-normal">{{ $data->radiologist_name }}</h6>
+                                                <!--<h6 class="text-xs mb-0 text-uppercase font-weight-bolder">Total</h6>-->
+                                                <h6 class="text-xs mb-0 text-uppercase font-weight-bolder">{{ui_label('dsb_total')}}</h6>
                                             </td>
                                             <td>
-                                                <h6 class="text-sm mb-0 text-center font-weight-normal">{{ $data->assign }}</h6>
+                                                <h6 class="text-sm mb-0 text-center font-weight-bolder">{{ $total_assign }}</h6>
                                             </td>
                                             <td>
-                                                <h6 class="text-sm mb-0 text-center font-weight-normal">{{ number_format($data->final_report,0,'.',',') }}</h6>
+                                                <h6 class="text-sm mb-0 text-center font-weight-bolder">{{ number_format($total_final,0,'.',',')}}</h6>
                                             </td>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td>
-                                            <!--<h6 class="text-xs mb-0 text-uppercase font-weight-bolder">Total</h6>-->
-                                            <h6 class="text-xs mb-0 text-uppercase font-weight-bolder">{{ui_label('dsb_total')}}</h6>
-                                        </td>
-                                        <td>
-                                            <h6 class="text-sm mb-0 text-center font-weight-bolder">{{ $total_assign }}</h6>
-                                        </td>
-                                        <td>
-                                            <h6 class="text-sm mb-0 text-center font-weight-bolder">{{ number_format($total_final,0,'.',',')}}</h6>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
+
+        {{-- @if (auth()->user()->notice_at != null) --}}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+            title: 'PAYMENT REMINDER',
+            html: 'You have pending payment. Please log into <a href="http://www.nrmedical.net" target="_blank" style="color: #007bff; text-decoration: underline;">www.nrmedical.net</a> to check status. Kindly ignore this notice if payment has been made.',
+            confirmButtonText: 'Close',
+            customClass: {
+                title: 'swal2-title-custom'
+            }
+            });
+        });
+        </script>
         {{-- @endif --}}
 
-	{{-- @if (auth()->user()->notice_at != null) --}}
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script>
-	document.addEventListener('DOMContentLoaded', function() {
-	    Swal.fire({
-		title: 'PAYMENT REMINDER',
-		html: 'You have pending payment. Please log into <a href="http://www.nrmedical.net" target="_blank" style="color: #007bff; text-decoration: underline;">www.nrmedical.net</a> to check status. Kindly ignore this notice if payment has been made.',
-		confirmButtonText: 'Close',
-		customClass: {
-		    title: 'swal2-title-custom'
-	   	}
-	    });
-	});
-	</script>
-	{{-- @endif --}}
+        <style>
+        .swal2-title-custom {
+            font-size: 14px !important;
+            font-weight: bold !important;
+            color: #2c3e50 !important;
+        }
+        </style>
 
-	<style>
-	.swal2-title-custom {
-	    font-size: 14px !important;
-	    font-weight: bold !important;
-	    color: #2c3e50 !important;
-	}
-	</style>
-
-        {{-- @include('layouts.footers.auth.footer') --}}
+            {{-- @include('layouts.footers.auth.footer') --}}
     </div>
 @endsection
 @push('js')

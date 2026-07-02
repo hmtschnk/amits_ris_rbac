@@ -11,6 +11,13 @@
             <form action="{{ route('role-access.store') }}" method="POST">
                 @csrf
                 <div class="modal-body">
+                     @if ($errors->any())
+                        <<div class="alert d-flex align-items-center py-2 px-3 mb-3" role="alert"
+                            style="background-color:#fdecea; border:1px solid #f5c2c0; color:#5a2a2a; border-radius:6px;">
+                            <i class="fas fa-exclamation-circle me-2" style="color:#e57373;"></i>
+                            <span class="text-xs">{{ $errors->first() }}</span>
+                        </div>
+                    @endif
                     <div class="row">
                         {{-- 1. Role Selection --}}
                         <div class="col-md-12">

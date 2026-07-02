@@ -188,7 +188,14 @@
 
 {{-- <script src="{{ asset('assets/js/features/role-permission-button.js') }}"></script> --}}
 {{-- function-module-addmodal.js is loaded via @push in add_modal.blade.php --}}
-
+@if ($errors->any())
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = new bootstrap.Modal(document.getElementById('{{ old('_editing_id') ? "editModal" . old('_editing_id') : "addRoleAccessModal" }}'));
+        modal.show();
+    });
+</script>
+@endif
 @endsection
                                     
                                     
