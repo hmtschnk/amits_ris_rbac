@@ -147,7 +147,7 @@
         }
     </style>
 
-    {{-- @if (auth()->user()->hasRoles(['MASTER_ADMIN','MANAGER'])) --}}
+     {{-- @if (auth()->user()->hasRoles(['MASTER_ADMIN','MANAGER'])) --}}
     @if (Auth::user()->hasPermission('Dashboard', 'dsb_topnav_selectGroup', 'VIEW'))
         @include('layouts.navbars.auth.topnav', ['title' => 'Dashboard','selectOption' => $userGroupSel,'groupname'=> $userGroupName, 'submitform' => $submit])
     @else
@@ -167,7 +167,10 @@
                      'dsb_card_assigned',
                      'dsb_card_final',
                  ])
-                 ->filter(fn ($permission) => Auth::user()->hasPermission('Dashboard', $permission, 'VIEW'))
+                 ->filter(function ($permission) {
+                     return Auth::user()->hasPermission('Dashboard', $permission, 'VIEW') ||
+                            Auth::user()->hasPermission('Dashboard', $permission, 'EDIT');
+                 })
                  ->count();
 
              $allCardsVisible = $visibleCardCount >= 5;
@@ -185,13 +188,18 @@
          {{-- UPLOADED --}} 
          {{-- @if (auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','MANAGER','SECONDARY','REGISTER'])) --}}
                {{--  <div class=" {{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','MANAGER','SECONDARY','REFERRING','REGISTER']) ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4"> --}}
-         @if (Auth::user()->hasPermission('Dashboard', 'dsb_card_uploaded', 'VIEW'))             
+         @php
+                $canViewUploaded = Auth::user()->hasPermission('Dashboard', 'dsb_card_uploaded', 'VIEW');
+                $canEditUploaded = Auth::user()->hasPermission('Dashboard', 'dsb_card_uploaded', 'EDIT');
+         @endphp
+         @if ($canViewUploaded || $canEditUploaded)
                 <div class="{{ $USAcardGrid }} mb-xl-0 mb-4">
-                    <a class="navbar-brand m-0" href="{{--{{ route('worklist','UPLOADED') }}--}}">
+                    <a class="navbar-brand m-0 d-block"
+                       @if($canEditUploaded) href="{{--{{ route('worklist','UPLOADED') }}--}}" @else style="cursor: default;" @endif>
                         <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
                             <div class="card-body p-3" style="background-color: #ffffff;">
                                 <div class="row">
-                                    <div class="col-8">
+                                    <div class="{{ $canEditUploaded ? 'col-8' : 'col-12' }}">
                                         <div class="numbers">
                                             <p class="text-sm mb-1 text-uppercase font-weight-bold">Uploaded</p>
                                             <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
@@ -201,12 +209,15 @@
                                                 {{ui_label('dsb_asof')}} {{ date('d/m/Y') }}</span>
                                                 <!--as of {{ date('d/m/Y') }}</span>-->
                                         </div>
-                                    </div>                                    
-                                    <div class="col-4 text-end"> {{-- button uploaded --}} 
+                                    </div>
+                                    {{-- button uploaded --}} 
+                                    @if ($canEditUploaded)
+                                    <div class="col-4 text-end">
                                         <div class="icon icon-shape bg-dark shadow-primary rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
                                             <i class="fa fa-upload text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
                                         </div>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -214,15 +225,21 @@
                 </div>
             @endif
 
-                {{-- STORED --}} 
-            @if (Auth::user()->hasPermission('Dashboard', 'dsb_card_stored', 'VIEW'))
+             {{-- STORED --}} 
+            @php
+                $canViewStored = Auth::user()->hasPermission('Dashboard', 'dsb_card_stored', 'VIEW');
+                $canEditStored = Auth::user()->hasPermission('Dashboard', 'dsb_card_stored', 'EDIT');
+            @endphp
+            @if ($canViewStored || $canEditStored)
                {{--  <div class="{{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4"> --}}
                 <div class="{{ $USAcardGrid }} mb-xl-0 mb-4">
-                    <a class="navbar-brand m-0" href="{{-- {{   route('worklist','STORED')}}--}}"> 
+                    <a class="navbar-brand m-0 d-block"
+                       @if($canEditStored) href="{{-- {{   route('worklist','STORED')}}--}}" @else style="cursor: default;" @endif>
                         <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
                             <div class="card-body p-3" style="background-color: #e8f5e9;">
                                 <div class="row">
-                                    <div class="col-8">
+                                    {{-- >>> EDIT: number column takes full width when no icon is shown <<< --}}
+                                    <div class="{{ $canEditStored ? 'col-8' : 'col-12' }}">
                                         <div class="numbers">
                                             <p class="text-sm mb-1 text-uppercase font-weight-bold">Stored</p>
                                             <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
@@ -234,11 +251,14 @@
                                             {{-- <p class="text-xs mb-0 text-success font-weight-bold">Storage only</p> --}}
                                         </div>
                                     </div>
-                                    <div class="col-4 text-end"> {{-- button stored --}}
+                                    {{-- button stored --}}
+                                    @if ($canEditStored)
+                                    <div class="col-4 text-end"> 
                                         <div class="icon icon-shape bg-gradient-success shadow-primary rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
                                             <i class="fa fa-database text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
                                         </div>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -248,15 +268,19 @@
 
             {{-- NEW --}}
             {{-- @if (!Auth::user()->hasRole('REFERRING')) --}}
-            @if (Auth::user()->hasPermission('Dashboard', 'dsb_card_new', 'VIEW'))
+            @php
+                $canViewNew = Auth::user()->hasPermission('Dashboard', 'dsb_card_new', 'VIEW');
+                $canEditNew = Auth::user()->hasPermission('Dashboard', 'dsb_card_new', 'EDIT');
+            @endphp
+            @if ($canViewNew || $canEditNew)
                 {{-- <div class="{{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-3 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4"> --}}
                 <div class="{{ $newFinalcardGrid }} mb-xl-0 mb-4">
-                    <a class="navbar-brand m-0" href=" {{--{{ route('worklist','NEW') }}--}} "> 
-                        
+                    <a class="navbar-brand m-0 d-block"
+                       @if($canEditNew) href="{{--{{ route('worklist','NEW') }}--}}" @else style="cursor: default;" @endif>
                         <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
                             <div class="card-body p-3" style="background-color: #fff3e0;">
                                 <div class="row">
-                                    <div class="col-8">
+                                    <div class="{{ $canEditNew ? 'col-8' : 'col-12' }}">
                                         <div class="numbers">
                                             {{-- <p class="text-sm mb-1 text-uppercase font-weight-bold"> {{ auth()->user()->hasRoles(['XRAY_FACILITY','SECONDARY','REFERRING']) ? 'WAITING' : 'NEW' }} </p> --}}
                                              <p class="text-sm mb-1 text-uppercase font-weight-bold">
@@ -270,11 +294,14 @@
                                                 <!--as of {{ date('d/m/Y') }}</span>-->
                                         </div>
                                     </div>
-                                    <div class="col-4 text-end"> {{-- button new --}}
+                                    {{-- button new --}}
+                                    @if ($canEditNew)
+                                    <div class="col-4 text-end"> 
                                         <div class="icon icon-shape bg-warning shadow-primary rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
                                             <i class="fa fa-share-from-square text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
                                         </div>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -282,16 +309,20 @@
                 </div>
             @endif
 
-                {{-- ASSIGNED --}}
-            @if (Auth::user()->hasPermission('Dashboard', 'dsb_card_assigned', 'VIEW'))
+            {{-- ASSIGNED --}}
+            @php
+                $canViewAssigned = Auth::user()->hasPermission('Dashboard', 'dsb_card_assigned', 'VIEW');
+                $canEditAssigned = Auth::user()->hasPermission('Dashboard', 'dsb_card_assigned', 'EDIT');
+            @endphp
+            @if ($canViewAssigned || $canEditAssigned)
                 {{-- <div class=" {{  auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6' }}  mb-xl-0 mb-4"> --}}
                  <div class="{{ $USAcardGrid }} mb-xl-0 mb-4">
-                    <a class="navbar-brand m-0" href=" {{--{{  route('worklist','ASSIGNED') }} --}} "> 
-                        
+                    <a class="navbar-brand m-0 d-block"
+                       @if($canEditAssigned) href="{{--{{  route('worklist','ASSIGNED') }} --}}" @else style="cursor: default;" @endif>
                         <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
                             <div class="card-body p-3" style="background-color: #e3f2fd;">
                                 <div class="row">
-                                    <div class="col-8">
+                                    <div class="{{ $canEditAssigned ? 'col-8' : 'col-12' }}">
                                         <div class="numbers">
                                             {{-- <div class="text-sm mb-1 text-uppercase font-weight-bold"> {{ auth()->user()->hasRoles(['XRAY_FACILITY','SECONDARY','REFERRING']) ? 'REPORTING' : 'Assigned' }}@if ($showMyself) <font size="1.5px">Myself</font> @endif </div> --}}
                                             <div class="text-sm mb-1 text-uppercase font-weight-bold">
@@ -307,11 +338,14 @@
                                             
                                         </div>
                                     </div>
-                                    <div class="col-4 text-end">  {{-- button assigned --}}
+                                    {{-- button assigned --}}
+                                    @if ($canEditAssigned)
+                                    <div class="col-4 text-end">  
                                         <div class="icon icon-shape bg-gradient-info shadow-danger rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
                                             <i class="fa fa-user-md text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
                                         </div>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -319,15 +353,20 @@
                 </div>
             @endif
 
-                {{-- FINAL --}}
-            @if (Auth::user()->hasPermission('Dashboard', 'dsb_card_final', 'VIEW'))  
+            {{-- FINAL --}}
+            @php
+                $canViewFinal = Auth::user()->hasPermission('Dashboard', 'dsb_card_final', 'VIEW');
+                $canEditFinal = Auth::user()->hasPermission('Dashboard', 'dsb_card_final', 'EDIT');
+            @endphp
+            @if ($canViewFinal || $canEditFinal)
                 {{-- <div class="  {{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-3 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4"> --}}
                 <div class="{{ $newFinalcardGrid  }} mb-xl-0 mb-4">
-                    <a class="navbar-brand m-0" href=" {{-- {{  route('worklist', 'FINAL') }} --}} "> 
+                    <a class="navbar-brand m-0 d-block"
+                       @if($canEditFinal) href="{{-- {{  route('worklist', 'FINAL') }} --}} " @else style="cursor: default;" @endif>
                         <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
                             <div class="card-body p-3" style="background-color: #e8f5e9;">
                                 <div class="row">
-                                    <div class="col-8">
+                                    <div class="{{ $canEditFinal ? 'col-8' : 'col-12' }}">
                                         <div class="numbers">
                                             <p class="text-sm mb-1 text-uppercase font-weight-bold">Final @if($showMyself)<font size="1.5px">Myself</font> @endif</p>
                                             <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
@@ -339,11 +378,14 @@
                                             
                                         </div>
                                     </div>
-                                    <div class="col-4 text-end"> {{-- button final --}}
+                                    {{-- button final --}}
+                                    @if ($canEditFinal)
+                                    <div class="col-4 text-end"> 
                                         <div class="icon icon-shape bg-gradient-success shadow-success rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
                                             <i class="fa fa-notes-medical text-white opacity-10" aria-hidden="true" style="font-size: 1.2rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
                                         </div>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
