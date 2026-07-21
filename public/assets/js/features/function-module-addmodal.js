@@ -1,7 +1,5 @@
 (function () {
 
-    // ── Read URLs from data attributes (set in blade, no {{ }} in JS) ──
-    // 
     
     var modal = document.getElementById('addRoleAccessModal');
     if (!modal) return; // safety guard

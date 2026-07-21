@@ -13,7 +13,7 @@
             @if (Auth::user()->hasPermission('Dashboard', null, 'VIEW'))
             {{-- || Auth::user()->hasPermission('Dashboard', null, 'EDIT')) --}}
                 <li class="nav-item">
-                    <a class="nav-link {{ Route::currentRouteName() == 'dashboard' ? 'active' : '' }}" href="{{ route('dashboard') }}">
+                    <a class="nav-link {{ Route::currentRouteName() == 'home' ? 'active' : '' }}" href="{{ route('home') }}">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="fa fa-chart-line text-primary text-sm opacity-10"></i>
                         </div>
@@ -59,7 +59,7 @@
                 @if (Auth::user()->hasPermission('DICOM Storage List', null, 'VIEW'))
                     <li class="nav-item">
                         {{-- <a class="nav-link {{ Request::path() == 'worklist/stored' ? 'active' : '' }}" href="{{ route('worklist','stored') }}"> --}}
-                        <a class="nav-link {{ Route::currentRouteName() == 'home' ? 'active' : '' }}" href="{{ route('home') }}">
+                        <a class="nav-link" href="#">
                             <div
                                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="fa fa-database text-primary text-sm opacity-10"></i>
@@ -118,7 +118,7 @@
                @if (Auth::user()->hasPermission('Radiologist Report', null, 'VIEW'))
                     <li class="nav-item">
                         {{-- <a class="nav-link {{ Route::currentRouteName() == 'report' ? 'active' : '' }}" href="{{ route('report.radiologist') }}"> --}}
-                        <a class="nav-link {{ Route::currentRouteName() == 'home' ? 'active' : '' }}" href="{{ route('home') }}">
+                        <a class="nav-link" href="#">
                             <div
                                 class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="ni ni-single-copy-04 text-primary text-sm opacity-10"></i>
@@ -177,7 +177,7 @@
                 @endif
             @endif
             
-            @if (Auth::user()->hasAnyPermission(['User'], 'VIEW'))
+            @if (Auth::user()->hasAnyPermission(['User', 'User Groups', 'Company', 'X-ray Filters'], 'VIEW'))
                 <li class="nav-item mt-2">
                     <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">User Management</h6>
                 </li>

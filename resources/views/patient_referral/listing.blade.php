@@ -154,7 +154,7 @@
                                             @endif
                                             @endif
 
-                                            {{-- @if($showDeleteButton) --}}
+                                            
                                             @if (Auth::user()->hasPermission('Patient Referral', 'patref_btn_delete', 'EDIT'))
                                             <form action="{{ route('patient_referral.destroy', $referral->id) }}" 
                                                   method="POST" 

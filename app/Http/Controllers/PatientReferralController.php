@@ -10,14 +10,11 @@ use Illuminate\Support\Facades\Auth;
 
 class PatientReferralController extends Controller
 {
-    /**
-     * LISTING PAGE
-     */
+
     public function listing(Request $request)
    {
     $query = PatientReferral::query();
 
-    // If reset button clicked, ignore all filters
     if ($request->submit !== 'reset') {
         if ($request->patient_id) {
             $query->where('patient_id', 'LIKE', '%' . $request->patient_id . '%');
@@ -35,7 +32,6 @@ class PatientReferralController extends Controller
 
     $referrals = $query->latest()->paginate(10);
     
-    // Clear search data if reset
     $search = $request->submit === 'reset' ? [] : $request->all();
 
     /** @var \App\Models\User $user */
@@ -43,10 +39,6 @@ class PatientReferralController extends Controller
 
     $showReferringClinic = true;
     $showXrayPanel = true;
-    // $showAddButton = true;
-    // $showDeleteButton = $user ? $user->hasRoles(['MASTER_ADMIN', 'MANAGER']) : false;
-    
-    
     $showAddButton = $user->hasPermission('Patient Referral', 'patref_btn_add', 'EDIT'); 
     $showDeleteButton = $user->hasPermission('Patient Referral', 'patref_btn_delete', 'EDIT'); 
 
@@ -73,9 +65,8 @@ class PatientReferralController extends Controller
         'isViewOnly'
     ));
    }
-    /**
-     * SHOW CREATE FORM
-     */
+   
+
     public function create()
     {
         // 1. Hardcoded X-ray Types list
@@ -88,7 +79,7 @@ class PatientReferralController extends Controller
             'Electricardiogram'
         ];
 
-        // 2. Mocking object structures just to keep form.blade.php text blocks happy
+        // 2. Mocking object structures 
         $referringClinic = (object)[
             'id' => 'SENA REFERRING CLINIC (TESTING 1)',
             'name' => 'SENA REFERRING CLINIC (TESTING 1)',
@@ -118,36 +109,31 @@ class PatientReferralController extends Controller
         return view('patient_referral.form', compact('xrayTypes', 'referringClinic', 'xrayPanel'));
     }
 
-    /**
-     * STORE DATA
-     */
+   
     public function store(Request $request)
     {
-        // Save form inputs directly as raw text data strings to match database schema columns
         PatientReferral::create([
             'patient_id'       => $request->patient_id,
             'patient_name'     => $request->patient_name,
             'gender'           => $request->gender,
             'age'              => $request->age,
-            'xray_type_id'     => $request->xray_type_id, // This holds the string 'Plain X-Ray', etc.
+            'xray_type_id'     => $request->xray_type_id,
             
-            // Add these missing fields so they are actually saved on creation:
             'birthdate'        => $request->birthdate,
             'patient_email'    => $request->patient_email,
             'referring_dr'     => $request->referring_dr,
             'clinical_reason'  => $request->clinical_reason,
             
-            'referring_clinic' => $request->referring_clinic_id, // Saves string 'SENA REFERRING CLINIC (TESTING 1)'
-            'xray_panel'       => $request->xray_panel_id,       // Saves string 'KLINIK ZAHRA GEMAS'
+            'referring_clinic' => $request->referring_clinic_id, 
+            'xray_panel'       => $request->xray_panel_id,      
         ]);
 
         return redirect()
             ->route('patient_referral.listing')
             ->with('success', 'Patient referral created successfully');
     }
-    /**
-     * EDIT PAGE
-     */
+  
+
    public function edit($id)
   {
     $record = PatientReferral::findOrFail($id);
@@ -199,9 +185,7 @@ class PatientReferralController extends Controller
     return view('patient_referral.form', compact('record', 'xrayTypes', 'referringClinic', 'xrayPanel','isViewOnly' ));
    }
     
-    /**
-     * UPDATE DATA
-     */
+    
     public function update(Request $request, $id)
    {
     $record = PatientReferral::findOrFail($id);
@@ -225,9 +209,7 @@ class PatientReferralController extends Controller
         ->with('success', 'Patient referral updated successfully');
     }
 
-    /**
-     * DELETE
-     */
+    
     public function delete($id)
     {
         $record = PatientReferral::findOrFail($id);
@@ -239,9 +221,7 @@ class PatientReferralController extends Controller
             ->with('success', 'Patient referral deleted successfully');
     }
 
-    /**
-     * VIEW DETAILS
-     */
+   
     public function view($id)
     {
         $record = PatientReferral::findOrFail($id);

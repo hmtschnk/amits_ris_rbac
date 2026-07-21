@@ -26,7 +26,7 @@ class AuthController extends Controller
         // This checks the users table and the hashed password
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate(); // prevents session fixation
-            return redirect()->route('home');
+
             // return redirect()->intended(route('storage.index'));
         }
 
@@ -41,7 +41,7 @@ class AuthController extends Controller
         if (!Auth::check()) {
             return redirect()->route('login');
         }
-        return view('welcome');
+        return redirect()->route('home');
     }
 
     public function destroy(Request $request)
@@ -50,7 +50,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect(route('login'));
-        // return redirect(route('home'));
+        return redirect(route('home'));
     }
 }

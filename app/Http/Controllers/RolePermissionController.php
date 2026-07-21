@@ -60,7 +60,7 @@ class RolePermissionController extends Controller
                                                 'showRoles', 'showModules', 'showFunctions')); 
     }
 
-    public function getFunctionsByModule($moduleId) //ADD MODULE FUNCR
+    public function getFunctionsByModule($moduleId) //ADD MODULE FUNC
     
     {
         $functions = FunctionModule::where('module_id', $moduleId)->get();

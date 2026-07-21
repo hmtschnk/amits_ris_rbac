@@ -1,26 +1,25 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-// use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PatientReferralController;
 use App\Http\Controllers\ModuleConfigController;
-
+use App\Http\Controllers\DashboardController;
 
 //Auth
-Route::get('/', [AuthController::class, 'index'])->name('home');
+Route::get('/', [AuthController::class, 'index']);
 Route::get('/login', [AuthController::class, 'show'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::get('/logout', [AuthController::class, 'show']);
 Route::post('/logout', [AuthController::class, 'destroy'])->name('auth.destroy');
 
-use App\Http\Controllers\DashboardController;
 
+//Routes after auth, dashboard as homepage
 Route::middleware(['auth'])->group(function () {
     
-    // The core Dashboard Router
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('home');
 
     
 });
@@ -36,9 +35,7 @@ Route::post('/role-access/store', [RolePermissionController::class, 'store'])->n
 Route::put('/role-access/{id}', [RolePermissionController::class, 'update'])->name('role-access.update');
 Route::delete('/role-access/{id}', [RolePermissionController::class, 'destroy'])->name('role-access.destroy');
 
-
-
-// Module Config AJAX Routes (no page, JSON only)
+//ModuleConfig Routes
 Route::group(['middleware' => ['auth']], function () {
     Route::post('/module-config/store-module', [ModuleConfigController::class, 'storeModule'])
         ->name('module-config.store-module');

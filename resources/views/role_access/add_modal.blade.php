@@ -42,7 +42,8 @@
                             </select>
                         </div>
 
-{{-- -----------------------------------------------------------Add New Module inline toggle------------------------------------------------------------------------------------------------------------------ --}}
+
+                        <!-- Add New Module inline toggle -->
                         <div class="col-md-12 mb-3">
                             <a href="#" class="text-primary text-xs" id="toggleAddModule">
                                 <i class="fa fa-plus-circle me-1"></i>Add new module
@@ -61,7 +62,7 @@
                                 <div id="moduleMsg" class="text-xs mt-1"></div>
                             </div>
                         </div>
-{{-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- --}}
+
 
                         {{-- 3. Function Access Selection --}}
                         <div class="mb-3">
@@ -71,13 +72,13 @@
                             </select>
                         </div>
 
-{{-- -----------------------------------------------------------Add New Function  inline toggle------------------------------------------------------------------------------------------------------------------ --}}
+                        <!-- Add New Function inline toggle -->
                         <div class="col-md-12 mb-3">
                             <a href="#" class="text-primary text-xs" id="toggleAddFunction">
                                 <i class="fa fa-plus-circle me-1"></i>Add new function access
                             </a>
                             <div id="addFunctionInline" class="mt-2" style="display:none;">
-                                {{-- Module selector for the new function --}}
+                                <!-- Module selector for the new function -->
                                 <div class="mb-2">
                                     <select class="form-select form-select-sm text-xs" id="newFunctionModuleId">
                                         <option value="" disabled selected>Select module for this function</option>
@@ -99,7 +100,7 @@
                                 <div id="functionMsg" class="text-xs mt-1"></div>
                             </div>
                         </div>
-{{-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- --}}
+
                         {{-- 4. Permission Level --}}
                         <div class="col-md-12 mt-3">
                             <div class="form-group">

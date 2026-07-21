@@ -1,7 +1,7 @@
 
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
  @section('content')
-    @include('layouts.navbars.auth.topnav')
+      @include('layouts.navbars.auth.topnav', ['title' => 'Role Access'])
 <div class="row mt-4 mx-4">
     <div class="col-12">
         <div class="card mb-4">
@@ -96,7 +96,7 @@
                         </div>
                     </form>
 
-{{--TABLE COLUMNS--}}
+        <!-- TABLE COLUMNS -->
         </div>
             <div class="card-body px-0 pt-0 pb-2">
                 <div class="table-responsive p-0"  style="min-height: 400px;">
@@ -112,37 +112,33 @@
                             </tr>
                         </thead>
 
-{{--TABLE BODY DATA VALUE--}}
+
+                        <!-- TABLE BODY DATA VALUE -->
                         <tbody>
                             @forelse($assignments as $index => $assignment)
                             <tr>
-                                {{-- Row Numbering --}}
                                 <td
                                     class ="mb-0 text-center text-secondary text-xs">{{ $index + 1 }}
                                 </td>
                                 
-                                
-                                {{-- Data from Roles Table --}}
                                 <td 
                                     class="mb-0 text-center text-secondary text-xs">{{ $assignment->roles->name }}
                                 </td>
                                 
-                                {{-- Data from Module Table --}}
                                 <td 
                                     class="mb-0 text-center text-secondary text-xs">{{ $assignment->functionModule->modules->module_name }}
                                 </td>
 
-                                {{-- Data from FunctionModule Table --}}
                                 <td 
                                     class="mb-0 text-center text-secondary text-xs">{{ $assignment->functionModule->function_name }}
                                 </td>
                                 
-                                {{-- Permission Status with Badge --}}
                                 <td class="text-center">
                                     <span class="badge badge-sm bg-gradient-success">{{ $assignment->permission }}</span> 
                                 </td>
                                 
- {{-- ACTION BUTTON --}}
+
+                                 <!-- ACTION BUTTON  -->
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-1">
                                             <button type="button" 
@@ -186,8 +182,6 @@
 <script src="{{ asset('assets/js/features/role-permission-button.js') }}"></script>
 <script src="{{ asset('assets/js/features/function-module-addmodal.js') }}"></script>
 
-{{-- <script src="{{ asset('assets/js/features/role-permission-button.js') }}"></script> --}}
-{{-- function-module-addmodal.js is loaded via @push in add_modal.blade.php --}}
 @if ($errors->any())
 <script>
     document.addEventListener('DOMContentLoaded', function () {

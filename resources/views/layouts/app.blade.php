@@ -13,9 +13,9 @@
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <!-- Nucleo Icons -->
-    <link href="{{ asset('./assets/css/nucleo-icons.css') }}" rel="stylesheet" />
-    <link href="{{ asset('./assets/css/fontawesome-min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('./assets/css/nucleo-svg.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/css/fontawesome-min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anynomous" referrerpolicy="no-referrer" /> 
     <!--<script src="https://kit.fontawesome.com/a81368914c.js" crossorigin="anonymous"></script> -->
@@ -46,7 +46,6 @@
                     <span class="mask bg-primary opacity-6"></span>
                 </div>
             @endif
-            {{-- Shows Sidebar --}}
             @include('layouts.navbars.auth.sidenav') 
                 <main class="main-content border-radius-lg">
                     @if (auth()->user()->status == 'TESTING')
@@ -61,7 +60,7 @@
                             </nav>
                         </div>
                     @endif
-                     @yield('content')  <!-- which part of content, theres only content under index. (login.blade) also have   -->
+                     @yield('content') 
                 </main>
         @endif
     @endauth
@@ -89,7 +88,6 @@
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-    <script src="{{ asset('assets/js/argon-dashboard.min.js?v=2.0.4') }}"></script>
     <script src="{{ asset('assets/js/argon-dashboard.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/chartjs.min.js') }}"></script>
     <script src="{{ asset('assets/js/moment-2.29.4.js') }}"></script>

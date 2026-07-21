@@ -147,7 +147,6 @@
         }
     </style>
 
-     {{-- @if (auth()->user()->hasRoles(['MASTER_ADMIN','MANAGER'])) --}}
     @if (Auth::user()->hasPermission('Dashboard', 'dsb_topnav_selectGroup', 'VIEW'))
         @include('layouts.navbars.auth.topnav', ['title' => 'Dashboard','selectOption' => $userGroupSel,'groupname'=> $userGroupName, 'submitform' => $submit])
     @else
@@ -186,8 +185,7 @@
         @endphp
          
          {{-- UPLOADED --}} 
-         {{-- @if (auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','MANAGER','SECONDARY','REGISTER'])) --}}
-               {{--  <div class=" {{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','MANAGER','SECONDARY','REFERRING','REGISTER']) ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4"> --}}
+        
          @php
                 $canViewUploaded = Auth::user()->hasPermission('Dashboard', 'dsb_card_uploaded', 'VIEW');
                 $canEditUploaded = Auth::user()->hasPermission('Dashboard', 'dsb_card_uploaded', 'EDIT');
@@ -195,7 +193,7 @@
          @if ($canViewUploaded || $canEditUploaded)
                 <div class="{{ $USAcardGrid }} mb-xl-0 mb-4">
                     <a class="navbar-brand m-0 d-block"
-                       @if($canEditUploaded) href="{{--{{ route('worklist','UPLOADED') }}--}}" @else style="cursor: default;" @endif>
+                       @if($canEditUploaded) href="{{ route('worklist','UPLOADED') }}" @else style="cursor: default;" @endif>
                         <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
                             <div class="card-body p-3" style="background-color: #ffffff;">
                                 <div class="row">
@@ -210,7 +208,6 @@
                                                 <!--as of {{ date('d/m/Y') }}</span>-->
                                         </div>
                                     </div>
-                                    {{-- button uploaded --}} 
                                     @if ($canEditUploaded)
                                     <div class="col-4 text-end">
                                         <div class="icon icon-shape bg-dark shadow-primary rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
@@ -231,10 +228,9 @@
                 $canEditStored = Auth::user()->hasPermission('Dashboard', 'dsb_card_stored', 'EDIT');
             @endphp
             @if ($canViewStored || $canEditStored)
-               {{--  <div class="{{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4"> --}}
                 <div class="{{ $USAcardGrid }} mb-xl-0 mb-4">
                     <a class="navbar-brand m-0 d-block"
-                       @if($canEditStored) href="{{-- {{   route('worklist','STORED')}}--}}" @else style="cursor: default;" @endif>
+                       @if($canEditStored) href="{{   route('worklist','STORED')}}" @else style="cursor: default;" @endif>
                         <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
                             <div class="card-body p-3" style="background-color: #e8f5e9;">
                                 <div class="row">
@@ -251,7 +247,6 @@
                                             {{-- <p class="text-xs mb-0 text-success font-weight-bold">Storage only</p> --}}
                                         </div>
                                     </div>
-                                    {{-- button stored --}}
                                     @if ($canEditStored)
                                     <div class="col-4 text-end"> 
                                         <div class="icon icon-shape bg-gradient-success shadow-primary rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
@@ -267,13 +262,12 @@
             @endif
 
             {{-- NEW --}}
-            {{-- @if (!Auth::user()->hasRole('REFERRING')) --}}
+            
             @php
                 $canViewNew = Auth::user()->hasPermission('Dashboard', 'dsb_card_new', 'VIEW');
                 $canEditNew = Auth::user()->hasPermission('Dashboard', 'dsb_card_new', 'EDIT');
             @endphp
             @if ($canViewNew || $canEditNew)
-                {{-- <div class="{{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-3 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4"> --}}
                 <div class="{{ $newFinalcardGrid }} mb-xl-0 mb-4">
                     <a class="navbar-brand m-0 d-block"
                        @if($canEditNew) href="{{--{{ route('worklist','NEW') }}--}}" @else style="cursor: default;" @endif>
@@ -282,10 +276,7 @@
                                 <div class="row">
                                     <div class="{{ $canEditNew ? 'col-8' : 'col-12' }}">
                                         <div class="numbers">
-                                            {{-- <p class="text-sm mb-1 text-uppercase font-weight-bold"> {{ auth()->user()->hasRoles(['XRAY_FACILITY','SECONDARY','REFERRING']) ? 'WAITING' : 'NEW' }} </p> --}}
-                                             <p class="text-sm mb-1 text-uppercase font-weight-bold">
-                                                {{ $useNewAssgLabel ? 'WAITING' : 'NEW' }}
-                                            </p>
+                                             <p class="text-sm mb-1 text-uppercase font-weight-bold"> {{ $useNewAssgLabel ? 'WAITING' : 'NEW' }} </p>
                                             <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
                                                 {{ $new->count() }}
                                             </h5>
@@ -294,7 +285,6 @@
                                                 <!--as of {{ date('d/m/Y') }}</span>-->
                                         </div>
                                     </div>
-                                    {{-- button new --}}
                                     @if ($canEditNew)
                                     <div class="col-4 text-end"> 
                                         <div class="icon icon-shape bg-warning shadow-primary rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
@@ -315,20 +305,15 @@
                 $canEditAssigned = Auth::user()->hasPermission('Dashboard', 'dsb_card_assigned', 'EDIT');
             @endphp
             @if ($canViewAssigned || $canEditAssigned)
-                {{-- <div class=" {{  auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-2 col-sm-6' : 'col-xl-4 col-sm-6' }}  mb-xl-0 mb-4"> --}}
                  <div class="{{ $USAcardGrid }} mb-xl-0 mb-4">
                     <a class="navbar-brand m-0 d-block"
-                       @if($canEditAssigned) href="{{--{{  route('worklist','ASSIGNED') }} --}}" @else style="cursor: default;" @endif>
+                       @if($canEditAssigned) href="{{  route('worklist','ASSIGNED') }}" @else style="cursor: default;" @endif>
                         <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
                             <div class="card-body p-3" style="background-color: #e3f2fd;">
                                 <div class="row">
                                     <div class="{{ $canEditAssigned ? 'col-8' : 'col-12' }}">
                                         <div class="numbers">
-                                            {{-- <div class="text-sm mb-1 text-uppercase font-weight-bold"> {{ auth()->user()->hasRoles(['XRAY_FACILITY','SECONDARY','REFERRING']) ? 'REPORTING' : 'Assigned' }}@if ($showMyself) <font size="1.5px">Myself</font> @endif </div> --}}
-                                            <div class="text-sm mb-1 text-uppercase font-weight-bold">
-                                                {{ $useNewAssgLabel ? 'REPORTING' : 'ASSIGNED' }}
-                                                @if ($showMyself) <font size="1.5px">Myself</font> @endif
-                                            </div>
+                                            <div class="text-sm mb-1 text-uppercase font-weight-bold"> {{ $useNewAssgLabel ? 'REPORTING' : 'ASSIGNED' }} @if ($showMyself) <font size="1.5px">Myself</font> @endif </div>
                                             <h5 class="font-weight-bolder mb-0" style="font-size: 18px !important;">
                                                 {{ $assign->count() }}
                                             </h5>
@@ -338,7 +323,7 @@
                                             
                                         </div>
                                     </div>
-                                    {{-- button assigned --}}
+                                
                                     @if ($canEditAssigned)
                                     <div class="col-4 text-end">  
                                         <div class="icon icon-shape bg-gradient-info shadow-danger rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
@@ -359,10 +344,10 @@
                 $canEditFinal = Auth::user()->hasPermission('Dashboard', 'dsb_card_final', 'EDIT');
             @endphp
             @if ($canViewFinal || $canEditFinal)
-                {{-- <div class="  {{ auth()->user()->hasRoles(['MASTER_ADMIN','XRAY_FACILITY','SECONDARY','REFERRING','MANAGER','REGISTER']) ? 'col-xl-3 col-sm-6' : 'col-xl-4 col-sm-6' }} mb-xl-0 mb-4"> --}}
+                
                 <div class="{{ $newFinalcardGrid  }} mb-xl-0 mb-4">
                     <a class="navbar-brand m-0 d-block"
-                       @if($canEditFinal) href="{{-- {{  route('worklist', 'FINAL') }} --}} " @else style="cursor: default;" @endif>
+                       @if($canEditFinal) href="{{  route('worklist', 'FINAL') }}" @else style="cursor: default;" @endif>
                         <div class="card border-0 shadow-sm" style="border-radius: 1rem; overflow: hidden;">
                             <div class="card-body p-3" style="background-color: #e8f5e9;">
                                 <div class="row">
@@ -378,7 +363,7 @@
                                             
                                         </div>
                                     </div>
-                                    {{-- button final --}}
+                                    
                                     @if ($canEditFinal)
                                     <div class="col-4 text-end"> 
                                         <div class="icon icon-shape bg-gradient-success shadow-success rounded-circle" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative;">
@@ -395,7 +380,6 @@
 	        @endif
         
         <div class="row mt-4">
-            {{-- @if ( auth()->user()->hasRoles(['MASTER_ADMIN','ADMIN_RADIOGRAPHER','ADMIN_ACCOUNTANT','ACCOUNTANT','RADIOGRAPHER','MANAGER'])) --}}
             @if (Auth::user()->hasPermission('Dashboard', 'dsb_overview_panel', 'VIEW'))
                 <div class="col-lg-2 mb-lg-0 mb-4">                    
                     <div class="row">
@@ -435,12 +419,12 @@
                             </div>
                         </div>
                     </div>
-                    <!-- PIECHART -->
-                    <div class="col mt-2">
-                    <div class="card">			    
-                        <canvas id="xrayPieChart" height="200"></canvas>
-                    </div>
-                    </div>
+                   
+            <div class="col mt-2">
+            <div class="card">			    
+                <canvas id="xrayPieChart" height="200"></canvas>
+            </div>
+            </div>
                 </div>
             @endif
             <script>
@@ -462,9 +446,6 @@
                     ? 'col-lg-5' : 'col-lg-6';
             @endphp
 
-            <!-- GRAPH 1 : TOTAL SERVICE -->
-            {{-- @if (!auth()->user()->hasRoles(['REGISTER','REFERRING'])) --}}
-                {{-- <div class=" {{ auth()->user()->hasRoles(['MASTER_ADMIN','ADMIN_RADIOGRAPHER','ADMIN_ACCOUNTANT','ACCOUNTANT','RADIOGRAPHER','MANAGER']) ? 'col-lg-5' : 'col-lg-6' }}  mb-lg-0 mb-4">  --}}
             @if (Auth::user()->hasPermission('Dashboard', 'dsb_graph_service_monthly', 'VIEW')) 
                 <div class="{{  $chartOvwSection }} mb-lg-0 mb-4">
                     <div class="card z-index-2 h-100">
@@ -482,8 +463,7 @@
                     </div>
                 </div>
             @endif
-                <!-- GRAPH 2 : VS -->
-                {{-- <div class=" {{ auth()->user()->hasRoles(['MASTER_ADMIN','ADMIN_RADIOGRAPHER','ADMIN_ACCOUNTANT','ACCOUNTANT','RADIOGRAPHER','MANAGER']) ? 'col-lg-5' : 'col-lg-6' }} mb-lg-0 mb-4">  --}}
+               
             @if (Auth::user()->hasPermission('Dashboard', 'dsb_graph_upload_view_daily', 'VIEW'))  
                 <div class="{{ $chartOvwSection }} mb-lg-0 mb-4">
                     <div class="card z-index-2 h-100">
@@ -503,7 +483,7 @@
             
         </div>
 
-        {{-- @if(count($ads) > 0)
+        @if(count($ads) > 0)
         <div class="ads-wrapper">
             @if(count($ads) >= 4)
                 <button class="arrow left" onclick="scrollAds(-1)">&#10094;</button>
@@ -516,18 +496,18 @@
                             {{-- <a href="{{ $ad['url'] }}" target="_blank">
                                 <img src="{{ asset($ad['src']) }}" alt="Advertisement">
                             </a>--}}
-                            {{-- <a href="{{ $ad['url'] }}" target="_blank">
+                            <a href="{{ $ad['url'] }}" target="_blank">
                                 <img src="{{ $ad['src'] }}" alt="Advertisement">
                             </a>
-                        @else --}}
+                        @else
                             {{-- <img src="{{ asset($ad['src']) }}" alt="Advertisement">--}}
-                            {{-- <img src="{{ $ad['src'] }}" alt="Advertisement">
+                            <img src="{{ $ad['src'] }}" alt="Advertisement">
                         @endif
                     </div>
-                @endforeach --}}
+                @endforeach
 
                 {{-- Desktop only: if fewer than 4 ads, pad with blanks --}}
-                {{-- @if(count($ads) < 4)
+                @if(count($ads) < 4)
                     @for($i = count($ads); $i < 4; $i++)
                         <div class="ad-item placeholder"></div>
                     @endfor
@@ -538,10 +518,8 @@
                 <button class="arrow right" onclick="scrollAds(1)">&#10095;</button>
             @endif 
         </div>
-        @endif --}}
+        @endif
 
-        <!-- SUMMARY -->
-        {{-- @if (!auth()->user()->hasRoles(['XRAY_FACILITY','SECONDARY','REGISTER','REFERRING'])) --}}
         @if (Auth::user()->hasPermission('Dashboard', 'dsb_summary_table', 'VIEW'))
             <div class="row mt-1">
                 <div class="col-lg-12 mb-lg-0 mb-4">
@@ -613,7 +591,7 @@
             </div>
         @endif
 
-        {{-- @if (auth()->user()->notice_at != null) --}}
+        @if (auth()->user()->notice_at != null)
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -627,7 +605,7 @@
             });
         });
         </script>
-        {{-- @endif --}}
+        @endif
 
         <style>
         .swal2-title-custom {
