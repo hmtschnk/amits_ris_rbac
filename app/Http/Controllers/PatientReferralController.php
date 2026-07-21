@@ -76,7 +76,7 @@ class PatientReferralController extends Controller
             'Ultrasound/Echocardiography',
             'CT Scan',
             'MRI',
-            'Electricardiogram'
+            'Electrocardiogram'
         ];
 
         // 2. Mocking object structures 
@@ -153,7 +153,7 @@ class PatientReferralController extends Controller
         'Ultrasound/Echocardiography',
         'CT Scan',
         'MRI',
-        'Electricardiogram'
+        'Electrocardiogram'
     ];
 
     $referringClinic = (object)[
