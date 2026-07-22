@@ -86,13 +86,14 @@
                                 <i class="fas fa-search me-2"></i>Search
                             </button>
                                 
-                            
+                            @if ($showAddButton)
                             <button type="button" 
                                 class="btn btn-success btn-sm px-3 d-flex align-items-center" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#addRoleAccessModal">
                                 <i class="fas fa-plus me-2"></i>Add
                             </button>
+                            @endif
                         </div>
                     </form>
 
@@ -108,7 +109,10 @@
                                 <th class="text-uppercase text-white text-xxs font-weight-bolder text-center">Module</th>
                                 <th class="text-uppercase text-white text-xxs font-weight-bolder text-center">Function Access</th>
                                 <th class="text-uppercase text-white text-xxs font-weight-bolder">Permission</th>
+
+                                @if ($showActionColumn)
                                 <th class="text-uppercase text-white text-xxs font-weight-bolder text-center">Action</th>
+                                @endif
                             </tr>
                         </thead>
 
@@ -139,8 +143,11 @@
                                 
 
                                  <!-- ACTION BUTTON  -->
+                                 @if($showActionColumn)
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-1">
+
+                                            @if($showEditButton)
                                             <button type="button" 
                                                 class="btn btn-icon-only btn-rounded btn-info btn-sm d-flex align-items-center justify-content-center"
                                                 data-bs-toggle="modal" 
@@ -148,7 +155,9 @@
                                                 data-toggle="tooltip" title="Edit/View">
                                                 <i class="fas fa-edit text-xs"></i>
                                             </button>
+                                            @endif
 
+                                            @if ($showDeleteButton)
                                             <button type="button" 
                                                 class="btn btn-icon-only btn-rounded btn-danger btn-sm d-flex align-items-center justify-content-center"
                                                 data-bs-toggle="modal" 
@@ -156,16 +165,23 @@
                                                 data-toggle="tooltip" title="Delete">
                                                 <i class="fas fa-trash text-xs"></i>
                                             </button>
+                                            @endif
                                     </div>
                                 </td>
+                                @endif
                             </tr>
                             
-                                @include('role_access.edit_modal', ['assignment' => $assignment])
-                                @include('role_access.delete_modal', ['assignment' => $assignment])
+                                @if($showEditButton)
+                                    @include('role_access.edit_modal', ['assignment' => $assignment])
+                                @endif
+                                @if ($showDeleteButton)
+                                    @include('role_access.delete_modal', ['assignment' => $assignment])
+                                @endif
 
                              @empty
                                 <tr>
-                                    <td colspan="6">
+                                    {{-- <td colspan="6"> --}}
+                                    <td colspan="{{ $showActionColumn ? 6 : 5 }}">
                                         <p class="text-xs mb-0 text-center">No records found</p>
                                     </td>
                                 </tr>
@@ -178,7 +194,9 @@
     </div>
 </div>
 
-@include('role_access.add_modal')
+@if ($showAddButton)
+    @include('role_access.add_modal')
+@endif
 <script src="{{ asset('assets/js/features/role-permission-button.js') }}"></script>
 <script src="{{ asset('assets/js/features/function-module-addmodal.js') }}"></script>
 

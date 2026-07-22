@@ -8,6 +8,7 @@ use App\Models\FunctionModule;
 use App\Models\Assignment;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class RolePermissionController extends Controller
 {
@@ -54,10 +55,23 @@ class RolePermissionController extends Controller
             $query->where('permission', 'like', '%' . $search['permission']);
         }
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        // Check individual permissions for the Role Access module
+        $showAddButton    = $user->hasPermission('Role Access', 'rac_btn_add', 'EDIT');
+        $showEditButton   = $user->hasPermission('Role Access', 'rac_btn_edit', 'EDIT');
+        $showDeleteButton = $user->hasPermission('Role Access', 'rac_btn_delete', 'EDIT');
+
+        // The Action column should ONLY show if the user can either Edit OR Delete
+        $showActionColumn = $showEditButton || $showDeleteButton;
+
+
         $assignments = $query->get();
         
         return view('role_access.index', compact('roles', 'modules', 'functions', 'assignments', 'search',
-                                                'showRoles', 'showModules', 'showFunctions')); 
+                                                'showRoles', 'showModules', 'showFunctions', 'showAddButton', 
+                                                'showEditButton', 'showDeleteButton', 'showActionColumn')); 
     }
 
     public function getFunctionsByModule($moduleId) //ADD MODULE FUNC
